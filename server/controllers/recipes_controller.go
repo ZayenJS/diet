@@ -5,35 +5,18 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ZayenJS/diet/models"
 )
 
-type Ingredient struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Quantity `json:"quantity"`
-}
-
-type Quantity struct {
-	Amount float64 `json:"amount"`
-	Unit   string  `json:"unit"`
-}
-
-type Recipe struct {
-	ID          int          `json:"id"`
-	Name        string       `json:"name"`
-	Ingredients []Ingredient `json:"ingredients"`
-	Steps       []string     `json:"steps"`
-}
-
-var recipes = []Recipe{
+var recipes = []models.Recipe{
 	{
 		ID:   1,
 		Name: "recipe1",
-		Ingredients: []Ingredient{
+		Ingredients: []models.Ingredient{
 			{
 				ID:   1,
 				Name: "ingredient1",
-				Quantity: Quantity{
+				Quantity: models.Quantity{
 					Amount: 1,
 					Unit:   "unit1",
 				},
@@ -41,7 +24,7 @@ var recipes = []Recipe{
 			{
 				ID:   2,
 				Name: "ingredient2",
-				Quantity: Quantity{
+				Quantity: models.Quantity{
 					Amount: 2,
 					Unit:   "unit2",
 				},
@@ -51,11 +34,11 @@ var recipes = []Recipe{
 	{
 		ID:   2,
 		Name: "recipe2",
-		Ingredients: []Ingredient{
+		Ingredients: []models.Ingredient{
 			{
 				ID:   3,
 				Name: "ingredient3",
-				Quantity: Quantity{
+				Quantity: models.Quantity{
 					Amount: 3,
 					Unit:   "unit3",
 				},
@@ -99,7 +82,7 @@ func (c *RecipesController) GetAll(ctx *gin.Context) {
 }
 
 func (c *RecipesController) Create(ctx *gin.Context) {
-	var recipe Recipe
+	var recipe models.Recipe
 	ctx.BindJSON(&recipe)
 	recipes = append(recipes, recipe)
 	ctx.JSON(http.StatusOK, gin.H{"message": "recipe created successfully"})
