@@ -13,10 +13,6 @@ func NewMainController() *MainController {
 	return &MainController{}
 }
 
-func (c *MainController) Home(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "Hello World!")
-}
-
 func (c *MainController) Ping(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "pong")
+	ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
 }

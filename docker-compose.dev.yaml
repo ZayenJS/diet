@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  vue:
+    container_name: diet-vue
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    working_dir: /app
+    ports:
+      - '8000:8080'
+    volumes:
+      - ./client:/app
+      - '/app/node_modules'
+    restart: unless-stopped
+    depends_on:
+      - go
+      - mysql
+
+  go:
+    container_name: diet-api
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    working_dir: /app
+    ports:
+      - 8001:3000
+    volumes:
+      - ./server:/app
+    restart: unless-stopped
+    depends_on:
+      - mysql
+
+  maildev:
+    image: maildev/maildev
+    ports:
+      - '8002:1080'
+    restart: unless-stopped
+    depends_on:
+      - go
+
+  mysql:
+    container_name: diet-db
+    image: mysql
+    environment:
+      - MYSQL_DATABASE=diet
+      - MYSQL_USER=diet
+      - MYSQL_PASSWORD=diet
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 5s
+      retries: 10
+    volumes:
+      - diet-data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  diet-data:

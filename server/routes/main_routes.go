@@ -9,5 +9,4 @@ func mainRoutes(r *gin.Engine) {
 	mainController := controllers.NewMainController()
 
 	r.GET("/ping", mainController.Ping)
-	r.GET("/", mainController.Home)
 }

@@ -7,4 +7,5 @@ import (
 func Setup(r *gin.Engine) {
 	mainRoutes(r)
 	recipesRoutes(r)
+	ingredientRoutes(r)
 }

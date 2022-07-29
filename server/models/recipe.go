@@ -1,8 +1,10 @@
 package models
 
+import "gorm.io/gorm"
+
 type Recipe struct {
-	ID          int          `json:"id"`
-	Name        string       `json:"name"`
-	Ingredients []Ingredient `json:"ingredients"`
-	Steps       []string     `json:"steps"`
+	gorm.Model
+	Name        string       `gorm:"type:varchar(255)" json:"name"`
+	Description string       `gorm:"type:varchar(255)" json:"description"`
+	Ingredients []Ingredient `gorm:"many2many:recipe_ingredients" json:"ingredients"`
 }
