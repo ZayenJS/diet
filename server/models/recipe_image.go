@@ -2,9 +2,9 @@ package models
 
 import "gorm.io/gorm"
 
-type Ingredient struct {
+type RecipeImage struct {
 	gorm.Model
-	Name     string  `gorm:"type:varchar(255)" json:"name"`
+	URL      string  `gorm:"type:varchar(255); not null" json:"url"`
 	Recipe   *Recipe `gorm:"foreignkey:RecipeID; references: ID" json:"recipe"`
 	RecipeID uint    `json:"recipe_id"`
 }

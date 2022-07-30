@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"time"
 
 	"github.com/ZayenJS/diet/database"
@@ -17,7 +18,7 @@ func main() {
 
 	app := gin.Default()
 
-	store := cookie.NewStore([]byte("secret"))
+	store := cookie.NewStore([]byte(os.Getenv("SESSION_KEY")))
 	app.Use(sessions.Sessions("ginsessid", store))
 
 	app.Use(cors.New(cors.Config{
