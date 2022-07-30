@@ -8,6 +8,7 @@ import (
 	"github.com/ZayenJS/diet/database"
 	"github.com/ZayenJS/diet/models"
 	"github.com/ZayenJS/diet/utils"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +17,21 @@ type AuthController struct {
 
 func NewAuthController() *AuthController {
 	return &AuthController{}
+}
+
+func (c *AuthController) CheckAuth(ctx *gin.Context) {
+	session := sessions.Default(ctx)
+	user_id := session.Get("user_id")
+
+	if user_id == nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Vous n'êtes pas connecté."})
+		return
+	}
+
+	var user models.User
+	database.Db.Where("id = ?", user_id).First(&user)
+
+	ctx.JSON(http.StatusOK, gin.H{"data": user})
 }
 
 /*
@@ -57,7 +73,9 @@ func (c *AuthController) Login(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: store user in session
+	session := sessions.Default(ctx)
+	session.Set("user_id", foundUser.ID)
+	session.Save()
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "Connexion réussie."})
 }
@@ -134,7 +152,10 @@ func (c *AuthController) Register(ctx *gin.Context) {
 }
 
 func (c *AuthController) Logout(ctx *gin.Context) {
-	// TODO: logout
+	session := sessions.Default(ctx)
+	session.Clear()
+	session.Save()
+
 	ctx.JSON(http.StatusOK, gin.H{"message": "Déconnexion réussie."})
 }
 

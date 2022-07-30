@@ -8,8 +8,9 @@ import (
 func authRoutes(r *gin.Engine) {
 	authController := controllers.NewAuthController()
 
-	r.POST("/login", authController.Login)
-	r.GET("/logout", authController.Logout)
-	r.POST("/register", authController.Register)
-	r.DELETE("unregister/:id", authController.Unregister)
+	r.GET("/auth/check", authController.CheckAuth)
+	r.POST("/auth/login", authController.Login)
+	r.GET("/auth/logout", authController.Logout)
+	r.POST("/auth/register", authController.Register)
+	r.DELETE("/unregister/:id", authController.Unregister)
 }
