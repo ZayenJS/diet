@@ -19,7 +19,14 @@ func Connect() *gorm.DB {
 }
 
 func Sync() {
-	Db.AutoMigrate(&models.Recipe{}, &models.Ingredient{}, &models.Quantity{}, &models.Unit{})
+	Db.AutoMigrate(
+		&models.User{},
+		&models.Recipe{},
+		&models.Ingredient{},
+		&models.Quantity{},
+		&models.Unit{},
+	)
+
 	fmt.Println("Database synced.")
 }
 

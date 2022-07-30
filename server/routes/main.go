@@ -6,6 +6,7 @@ import (
 
 func Setup(r *gin.Engine) {
 	mainRoutes(r)
+	authRoutes(r)
 	recipesRoutes(r)
 	ingredientRoutes(r)
 }
