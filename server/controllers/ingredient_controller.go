@@ -2,48 +2,27 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/ZayenJS/diet/database"
 	"github.com/ZayenJS/diet/models"
 	"github.com/gin-gonic/gin"
 )
 
-type IngredientController struct {
+type ingredientController struct {
+	baseController
 }
 
-func NewIngredientController() *IngredientController {
-	return &IngredientController{}
-}
-
-func (c *IngredientController) GetOne(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	convertedId, error := strconv.ParseUint(id, 10, 64)
-
-	if error != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
-		return
-	}
-
+func (c *ingredientController) GetOne(ctx *gin.Context) {
 	ingredient := models.Ingredient{}
-	result := database.Db.Find(&ingredient, convertedId)
-
-	if result.Error != nil || ingredient.ID == 0 {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "ingredient not found"})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, ingredient)
+	c._getOne(ctx, ingredient, ingredient.ID, "Ingredient not found")
 }
 
-func (c *IngredientController) GetAll(ctx *gin.Context) {
+func (c *ingredientController) GetAll(ctx *gin.Context) {
 	ingredients := []models.Ingredient{}
-	database.Db.Find(&ingredients)
-	ctx.JSON(http.StatusOK, gin.H{"ingredients": ingredients})
+	c._getAll(ctx, ingredients)
 }
 
-func (c *IngredientController) Create(ctx *gin.Context) {
+func (c *ingredientController) Create(ctx *gin.Context) {
 	var ingredient models.Ingredient
 	ctx.BindJSON(&ingredient)
 
@@ -52,10 +31,8 @@ func (c *IngredientController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "ingredient created successfully"})
 }
 
-func (c *IngredientController) Update(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	convertedId, error := strconv.ParseUint(id, 10, 64)
+func (c *ingredientController) Update(ctx *gin.Context) {
+	convertedId, error := c.CheckIdParam(ctx)
 
 	if error != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
@@ -77,10 +54,8 @@ func (c *IngredientController) Update(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, ingredient)
 }
 
-func (c *IngredientController) Delete(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	convertedId, error := strconv.ParseUint(id, 10, 64)
+func (c *ingredientController) Delete(ctx *gin.Context) {
+	convertedId, error := c.CheckIdParam(ctx)
 
 	if error != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
@@ -99,3 +74,5 @@ func (c *IngredientController) Delete(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "ingredient deleted successfully"})
 }
+
+var IngredientController *ingredientController = &ingredientController{}

@@ -6,13 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type MainController struct {
+type mainController struct {
 }
 
-func NewMainController() *MainController {
-	return &MainController{}
-}
-
-func (c *MainController) Ping(ctx *gin.Context) {
+func (c *mainController) Ping(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
 }
+
+func (c *mainController) Home(ctx *gin.Context) {
+	ctx.File("./views/index.html")
+}
+
+var MainController *mainController = &mainController{}

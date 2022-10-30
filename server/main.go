@@ -35,5 +35,5 @@ func main() {
 	database.Connect()
 	database.Sync()
 
-	app.Run()
+	app.Run(":" + os.Getenv("PORT"))
 }
