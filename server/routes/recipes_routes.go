@@ -6,11 +6,11 @@ import (
 )
 
 func recipesRoutes(r *gin.Engine) {
-	recipesController := controllers.NewRecipesController()
+	RecipesController := controllers.RecipesController
 
-	r.GET("/recipes", recipesController.GetAll)
-	r.GET("/recipes/:id", recipesController.GetOne)
-	r.POST("/recipes", recipesController.Create)
-	r.PUT("/recipes/:id", recipesController.Update)
-	r.DELETE("/recipes/:id", recipesController.Delete)
+	r.GET("/recipe", RecipesController.GetAll)
+	r.GET("/recipe/:id", RecipesController.GetOne)
+	r.POST("/recipe", RecipesController.Create)
+	r.PUT("/recipe/:id", RecipesController.Update)
+	r.DELETE("/recipe/:id", RecipesController.Delete)
 }

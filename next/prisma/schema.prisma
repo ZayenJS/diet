@@ -1,0 +1,148 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Recipe {
+  id              Int            @id @default(autoincrement())
+  name            String
+  description     String?
+  difficulty      DifficultyEnum
+  rating          Int
+  cost            Float
+  preparationTime Int            @map("preparation_time")
+  cookingTime     Int            @map("cooking_time")
+  restTime        Int            @map("rest_time")
+  thumbnailUrl    String         @map("thumbnail_url")
+  forHowMany      Int            @map("for_how_many")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+  steps           Step[]
+  ingredients     Ingredient[]
+  images          RecipeImage[]
+  tags            Tag[]          @relation("recipes_tags")
+  calories        Int?
+  protein         Float?
+  fat             Float?
+  saturated       Float?
+  carbs           Float?
+  sugar           Float?
+  tools           Tool[]         @relation("recipes_tools")
+
+  @@unique([name], name: "recipe_name_unique")
+  @@index([name], name: "recipe_name")
+  @@index([difficulty], name: "recipe_difficulty")
+  @@index([rating], name: "recipe_rating")
+  @@index([calories], name: "macro_calories")
+  @@index([protein], name: "macro_protein")
+  @@map("recipes")
+}
+
+model Tool {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int?     @map("recipe_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  name      String
+  recipes   Recipe[] @relation("recipes_tools")
+
+  @@index([name], name: "tool_name")
+  @@map("tools")
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  recipes   Recipe[] @relation("recipes_tags")
+
+  @@map("tags")
+}
+
+model Step {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int?     @map("recipe_id")
+  recipe    Recipe?  @relation(fields: [recipeId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  text      String
+
+  @@map("steps")
+}
+
+model Product {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  name        String
+  images      String?
+  ingredients Ingredient[]
+
+  @@index([name], name: "product_name")
+  @@map("products")
+}
+
+model Ingredient {
+  id        Int      @id @default(autoincrement())
+  productId Int      @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id])
+  recipeId  Int?     @map("recipe_id")
+  recipe    Recipe?  @relation(fields: [recipeId], references: [id])
+  unit      Unit
+  amount    Float
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([productId], name: "ingredient_product_id")
+  @@index([recipeId], name: "ingredient_recipe_id")
+  @@map("ingredients")
+}
+
+model RecipeImage {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int?     @map("recipe_id")
+  recipe    Recipe?  @relation(fields: [recipeId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  url       String
+
+  @@map("recipe_images")
+}
+
+enum Role {
+  ADMIN
+  USER
+
+  @@map("roles")
+}
+
+enum DifficultyEnum {
+  EASY
+  MEDIUM
+  HARD
+
+  @@map("difficulty_enum")
+}
+
+enum Unit {
+  GRAM
+  KILOGRAM
+  LITER
+  MILLILITER
+  TEASPOON
+  TABLESPOON
+  CUP
+  PINCH
+  PIECE
+
+  @@map("unit_enum")
+}

@@ -1,0 +1,19 @@
+$xs: 412px;
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1200px;
+$xxl: 1600px;
+
+$main-color: rgb(170, 243, 170);
+$main-color-light: lighten($main-color, 5%);
+$main-color-lighter: lighten($main-color, 10%);
+$main-color-dark: darken($main-color, 5%);
+$secondary-color: rgb(108, 108, 161);
+$secondary-color-light: lighten($secondary-color, 5%);
+$dark-text-color: rgb(78, 78, 163);
+$light-text-color: rgb(255, 255, 255);
+
+$easy: rgb(83, 169, 83);
+$medium: rgb(199, 150, 89);
+$hard: rgb(217, 97, 97);

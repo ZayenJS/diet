@@ -1,0 +1,12 @@
+@import '../../assets/scss/mixins';
+
+.container {
+  @include layout(8rem auto 5rem);
+
+  main {
+    width: 100%;
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+}

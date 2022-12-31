@@ -1,0 +1,89 @@
+@import '../../assets/scss/variables';
+@import '../../assets/scss/mixins';
+
+.container {
+  color: $dark-text-color;
+
+  .title {
+    @include flex(center, center);
+    min-height: 3rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .thumbnail {
+    aspect-ratio: 11/9;
+    object-fit: cover;
+    border-radius: 1rem;
+  }
+
+  .list {
+    @include flex(center, flex-end);
+    gap: 1rem;
+    padding: 0.5rem 0;
+  }
+
+  .for_how_many,
+  .total_time {
+    @include flex(center, center);
+    gap: 0.25rem;
+
+    &:before {
+      color: $secondary-color;
+      font-size: 1.25rem;
+    }
+  }
+
+  .for_how_many {
+    &:before {
+      font-size: 1.5rem;
+    }
+  }
+
+  .cost {
+    @include flex(center, center);
+
+    &:after {
+      color: $dark-text-color;
+      font-size: 1rem;
+    }
+  }
+
+  .difficulty {
+    @include flex(center, center);
+  }
+
+  %difficulty_icon {
+    @include flex(center, center);
+    gap: 0.25rem;
+
+    &:before {
+      color: $secondary-color;
+      font-size: 1.25rem;
+    }
+  }
+
+  .difficulty_icon--easy {
+    @extend %difficulty_icon;
+
+    &:before {
+      color: $easy;
+    }
+  }
+
+  .difficulty_icon--medium {
+    @extend %difficulty_icon;
+
+    &:before {
+      color: $medium;
+    }
+  }
+
+  .difficulty_icon--hard {
+    @extend %difficulty_icon;
+
+    &:before {
+      color: $hard;
+    }
+  }
+}

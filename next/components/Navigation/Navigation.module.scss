@@ -1,0 +1,8 @@
+@import '../../assets/scss/mixins';
+
+.container {
+  ul {
+    @include flex(center, center);
+    gap: 1rem;
+  }
+}

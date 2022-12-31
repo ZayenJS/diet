@@ -54,5 +54,34 @@ services:
       - diet-data:/var/lib/mysql
     restart: unless-stopped
 
+  next:
+    container_name: diet-next
+    build:
+      context: ./next
+      dockerfile: Dockerfile.dev
+    working_dir: /app
+    ports:
+      - '7999:3000'
+    volumes:
+      - ./next:/app
+      - '/app/node_modules'
+    restart: unless-stopped
+    depends_on:
+      - pg
+
+  pg:
+    image: postgres
+    container_name: diet-pg
+    ports:
+      - '7998:5432'
+    environment:
+      - POSTGRES_USER=diet
+      - POSTGRES_PASSWORD=diet
+      - POSTGRES_DB=diet
+    volumes:
+      - diet-pg-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
 volumes:
   diet-data:
+  diet-pg-data:

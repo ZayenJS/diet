@@ -9,4 +9,5 @@ func Setup(r *gin.Engine) {
 	authRoutes(r)
 	recipesRoutes(r)
 	ingredientRoutes(r)
+	unitRoutes(r)
 }

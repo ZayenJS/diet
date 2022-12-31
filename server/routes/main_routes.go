@@ -6,7 +6,8 @@ import (
 )
 
 func mainRoutes(r *gin.Engine) {
-	mainController := controllers.NewMainController()
+	MainController := controllers.MainController
 
-	r.GET("/ping", mainController.Ping)
+	r.GET("/", MainController.Home)
+	r.GET("/ping", MainController.Ping)
 }

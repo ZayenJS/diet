@@ -1,0 +1,20 @@
+FROM node:16
+
+# Create app directory
+WORKDIR /app
+
+# Install app dependencies
+COPY package.json .
+
+RUN npm i
+
+# Bundle app source
+COPY . .
+
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+
+EXPOSE 3000
+RUN chown -R node:node .
+USER node
+CMD [ "yarn", "dev" ]

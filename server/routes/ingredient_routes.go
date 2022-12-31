@@ -6,11 +6,11 @@ import (
 )
 
 func ingredientRoutes(r *gin.Engine) {
-	ingredientController := controllers.NewIngredientController()
+	IngredientController := controllers.IngredientController
 
-	r.GET("/ingredients", ingredientController.GetAll)
-	r.GET("/ingredients/:id", ingredientController.GetOne)
-	r.POST("/ingredients", ingredientController.Create)
-	r.PUT("/ingredients/:id", ingredientController.Update)
-	r.DELETE("/ingredients/:id", ingredientController.Delete)
+	r.GET("/ingredient", IngredientController.GetAll)
+	r.GET("/ingredient/:id", IngredientController.GetOne)
+	r.POST("/ingredient", IngredientController.Create)
+	r.PUT("/ingredient/:id", IngredientController.Update)
+	r.DELETE("/ingredient/:id", IngredientController.Delete)
 }
