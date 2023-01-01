@@ -11,8 +11,21 @@ $main-color-lighter: lighten($main-color, 10%);
 $main-color-dark: darken($main-color, 5%);
 $secondary-color: rgb(108, 108, 161);
 $secondary-color-light: lighten($secondary-color, 5%);
+$secondary-color-lighter: lighten($secondary-color, 10%);
+$secondary-color-alpha-75: rgba(108, 108, 161, 0.75);
+$secondary-color-dark: darken($secondary-color, 5%);
 $dark-text-color: rgb(78, 78, 163);
 $light-text-color: rgb(255, 255, 255);
+
+$color-gray-100: rgb(245, 245, 245);
+$color-gray-200: rgb(235, 235, 235);
+$color-gray-300: rgb(225, 225, 225);
+$color-gray-400: rgb(215, 215, 215);
+$color-gray-500: rgb(205, 205, 205);
+$color-gray-600: rgb(195, 195, 195);
+$color-gray-700: rgb(185, 185, 185);
+$color-gray-800: rgb(175, 175, 175);
+$color-gray-900: rgb(165, 165, 165);
 
 $easy: rgb(83, 169, 83);
 $medium: rgb(199, 150, 89);

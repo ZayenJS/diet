@@ -43,8 +43,9 @@
   flex-flow: $ff;
 }
 
-@mixin layout($rows: 10rem auto 5rem, $minHeight: 100vh) {
+@mixin layout($rows: 10rem auto 5rem, $areas: 'header' 'main' 'footer', $minHeight: 100vh) {
   display: grid;
   grid-template-rows: $rows;
+  grid-template-areas: $areas;
   min-height: $minHeight;
 }

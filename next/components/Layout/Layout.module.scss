@@ -1,12 +1,28 @@
 @import '../../assets/scss/mixins';
 
 .container {
-  @include layout(8rem auto 5rem);
+  $header-height: 8rem;
+  $footer-height: 5rem;
 
-  main {
+  @include layout($header-height auto $footer-height, 'header' 'main' 'footer', 100vh);
+
+  > header {
+    position: fixed;
+    width: 100%;  
+    grid-area: header;
+    height: $header-height;
+  }
+
+  > main {
     width: 100%;
     max-width: 90rem;
     margin: 0 auto;
     padding: 2rem;
+    grid-area: main;
+  }
+
+  > footer {
+    grid-area: footer;
+    height: $footer-height;
   }
 }

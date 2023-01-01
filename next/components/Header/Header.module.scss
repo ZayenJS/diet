@@ -8,3 +8,9 @@
   font-weight: 600;
   padding: 2rem;
 }
+
+.brand {
+  @include flex(baseline, center);
+  gap:0.5rem;
+
+}

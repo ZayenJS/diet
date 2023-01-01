@@ -82,3 +82,25 @@
 .diet-after-search:after {
   content: '\e9';
 }
+
+.diet-before-left-arrow:before,
+.diet-after-left-arrow:after {
+  content: '\e10';
+}
+.diet-before-left-arrow-double:before,
+.diet-after-left-arrow-double:after {
+  content: '\e11';
+}
+
+.diet-before-right-arrow:before,
+.diet-after-right-arrow:after {
+  display: inline-block;
+  content: '\e10';
+  transform: rotate(180deg);
+}
+.diet-before-right-arrow-double:before,
+.diet-after-right-arrow-double:after {
+  display: inline-block;
+  content: '\e11';
+  transform: rotate(180deg);
+}

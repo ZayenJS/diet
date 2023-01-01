@@ -5,9 +5,11 @@ import Recipe from '../../components/Recipe/Recipe';
 import { prisma } from '../../lib/prisma';
 
 import classes from '../../assets/scss/pages/recipes.module.scss';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest } from 'next';
 import { Prisma } from '@prisma/client';
-import Link from 'next/link';
+import Pagination from '../../components/Pagination/Pagination';
+import Head from 'next/head';
+import { APP_NAME } from '../../constants';
 
 interface Props {
   recipes: FullRecipe[];
@@ -16,38 +18,29 @@ interface Props {
   perPage: number;
 }
 
-const RecipesPage: FC<Props> = ({ recipes, page, perPage, pages }) => {
+const RecipesPage: FC<Props> = ({ recipes, page, pages }) => {
   const recipesMap = recipes.map((recipe) => <Recipe key={recipe.id} recipe={recipe} />);
   const noRecipes = <p>Aucune recette n&apos;a été trouvée</p>;
   const content = recipes.length > 0 ? recipesMap : noRecipes;
 
-  const pagesButtons = [];
-
-  for (let i = 1; i <= pages; i++) {
-    pagesButtons.push(<Link href={`/recettes?page=${i}&per-page=${perPage}`}>{i}</Link>);
-  }
-
   return (
-    <Layout>
-      <div className={classes.container}>{content}</div>
-      <div className="pagination">
-        {page > 1 && <Link href={`/recettes?page=${Number(page) - 1}&per-page=${perPage}`}>Précédent</Link>}
-        {pagesButtons}
-        {page < pages && <Link href={`/recettes?page=${Number(page) + 1}&per-page=${perPage}`}>Suivant</Link>}
-        <p>
-          Page {page} sur {pages}
-        </p>
-        <p>
-          {recipes.length} recettes sur {recipes.length * pages}
-        </p>
-      </div>
-    </Layout>
+    <>
+      <Head>
+        <title>{APP_NAME} | Recettes (page {page})</title>
+      </Head>
+      <Layout>
+        <div className={classes.recipes}>
+          <div className={classes.container}>{content}</div>
+          <Pagination page={Number(page)} pages={pages} path="/recettes" goToExtremity />
+        </div>
+      </Layout>
+    </>
   );
 };
 
 export const getServerSideProps = async (req: NextApiRequest) => {
   const { page = 1, sort, direction } = req.query;
-  const perPage = req.query['per-page'] ?? 10;
+  const perPage = req.query['per-page'] ?? req.query['perPage'] ?? 8;
 
   const skip = (Number(page) - 1) * Number(perPage);
   const take = Number(perPage);

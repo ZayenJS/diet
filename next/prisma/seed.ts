@@ -8,7 +8,7 @@ class Seed {
   private static numberOfSteps = faker.datatype.number({ min: 60, max: 120 });
   private static numberOfTags = faker.datatype.number({ min: 10, max: 20 });
   private static numberOfTools = faker.datatype.number({ min: 5, max: 20 });
-  private static numberOfRecipes = faker.datatype.number({ min: 5, max: 20 });
+  private static numberOfRecipes = faker.datatype.number({ min: 10, max: 30 });
   private static numberOfIngredients = faker.datatype.number({ min: 50, max: 100 });
   private static numberOfRecipeImages = faker.datatype.number({ min: 10, max: 50 });
 
