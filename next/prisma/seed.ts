@@ -1,9 +1,10 @@
-import { DifficultyEnum, Unit, PrismaClient } from '@prisma/client';
+import { Difficulty, Unit, PrismaClient } from '@prisma/client';
 import faker from 'faker';
 
 class Seed {
   private static prisma = new PrismaClient();
 
+  private static numberOfCategories = faker.datatype.number({ min: 5, max: 10 });
   private static numberOfProducts = faker.datatype.number({ min: 50, max: 100 });
   private static numberOfSteps = faker.datatype.number({ min: 60, max: 120 });
   private static numberOfTags = faker.datatype.number({ min: 10, max: 20 });
@@ -19,6 +20,7 @@ class Seed {
   private static async seedDatabase() {
     await this.deleteData();
     await this.restartSequences();
+    await this.seedCategories();
     await this.seedProducts();
     await this.seedSteps();
     await this.seedTags();
@@ -52,11 +54,23 @@ class Seed {
     console.log('Restarted all sequences');
   }
 
+  private static async seedCategories() {
+    for (let i = 1; i <= this.numberOfCategories; i++) {
+      await this.prisma.category.create({
+        data: {
+          name: faker.commerce.department() + faker.datatype.number(10),
+          color: faker.internet.color(),
+        },
+      });
+    }
+    console.log('Created categories');
+  }
+
   private static async seedProducts() {
     for (let i = 1; i <= this.numberOfProducts; i++) {
       await this.prisma.product.create({
         data: {
-          name: faker.commerce.productName(),
+          name: faker.commerce.productName() + faker.datatype.number(10),
           images: faker.random.image(),
         },
       });
@@ -79,7 +93,8 @@ class Seed {
     for (let i = 1; i <= this.numberOfTags; i++) {
       await this.prisma.tag.create({
         data: {
-          name: faker.lorem.word(),
+          name: faker.lorem.word() + faker.datatype.number(10),
+          color: faker.internet.color(),
         },
       });
     }
@@ -90,7 +105,7 @@ class Seed {
     for (let i = 1; i <= this.numberOfTools; i++) {
       await this.prisma.tool.create({
         data: {
-          name: faker.lorem.word(),
+          name: faker.lorem.word() + faker.datatype.number(10),
         },
       });
     }
@@ -117,13 +132,15 @@ class Seed {
         })
       ).map((step) => ({ id: step.id }));
 
+      const category = faker.random.arrayElement(await this.prisma.category.findMany());
+
       await this.prisma.recipe.create({
         data: {
           name: `${faker.lorem.sentence(faker.datatype.number(10))}_${faker.datatype.number({ min: 1, max: 5 })}`,
           description: faker.lorem.sentence(),
           cookingTime: faker.datatype.number(60),
           cost: faker.datatype.number(100),
-          difficulty: faker.random.arrayElement(Object.values(DifficultyEnum)),
+          difficulty: faker.random.arrayElement(Object.values(Difficulty)),
           forHowMany: faker.datatype.number(8),
           preparationTime: faker.datatype.number(35),
           rating: faker.datatype.number(5),
@@ -144,6 +161,7 @@ class Seed {
           steps: {
             connect: steps,
           },
+          categoryId: category.id,
         },
       });
     }

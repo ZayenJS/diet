@@ -6,7 +6,7 @@ import classes from './Search.module.scss';
 
 export interface SearchProps {}
 
-const Search: FC<SearchProps> = () => {
+const Search: FC<SearchProps> = (props) => {
   const inputRandomId = new Random<string>('string');
   const listRandomId = new Random<string>('string');
   const inputRef = useRef<HTMLInputElement>(null);

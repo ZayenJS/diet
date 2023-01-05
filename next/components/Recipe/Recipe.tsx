@@ -3,15 +3,18 @@ import { FC } from 'react';
 import { FullRecipe } from '../../@types/types/FullRecipe';
 import { Difficulty } from '../../models/Difficulty';
 import { Time } from '../../utils/Time';
+import Tags from '../Tags/Tags';
 
 import classes from './Recipe.module.scss';
 
 export interface RecipeProps {
   recipe: FullRecipe;
   detailed?: boolean;
+  scrollableTags?: boolean;
+  showMoreTags?: boolean;
 }
 
-const Recipe: FC<RecipeProps> = ({ recipe, detailed = false }) => {
+const Recipe: FC<RecipeProps> = ({ recipe, detailed = false, scrollableTags = true, showMoreTags = false }) => {
   if (!detailed) {
     const difficulyClassName = Difficulty.getDifficultyClassName(recipe.difficulty);
     const difficultyMarkup = Difficulty.getDifficultyMarkup(
@@ -24,9 +27,16 @@ const Recipe: FC<RecipeProps> = ({ recipe, detailed = false }) => {
         <Link href={`/recettes/${recipe.id}`}>
           <strong className={classes.title}>{recipe.name}</strong>
         </Link>
-        <Link href={`/recettes/${recipe.id}`}>
-          <img className={classes.thumbnail} src={recipe.thumbnailUrl} alt={''} />
-        </Link>
+        <div className={classes.thumbnail_container}>
+          {recipe.thumbnailUrl && (
+            <div className={classes.tags_container}>
+              <Tags tags={recipe.tags} basePath={'/recettes/tag'} scrollable={scrollableTags} showMore={showMoreTags} />
+            </div>
+          )}
+          <Link href={`/recettes/${recipe.id}`}>
+            <img className={classes.thumbnail} src={recipe.thumbnailUrl} alt={''} />
+          </Link>
+        </div>
         <ul className={classes.list}>
           <li className={`${classes.total_time} diet-before-clock`}>
             {Time.toHoursAndMinutes(recipe.preparationTime + recipe.cookingTime + recipe.restTime)}

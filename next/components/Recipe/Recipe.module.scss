@@ -3,12 +3,18 @@
 
 .container {
   color: $dark-text-color;
+  max-width: 40rem;
+  @include flex($ff: column nowrap);
 
   .title {
     @include flex(center, center);
     min-height: 3rem;
     font-weight: 600;
     text-align: center;
+  }
+
+  .thumbnail_container {
+    position: relative;
   }
 
   .thumbnail {

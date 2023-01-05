@@ -49,3 +49,39 @@
   grid-template-areas: $areas;
   min-height: $minHeight;
 }
+
+@mixin text($fs: 1rem, $fw: 400, $lh: 1.5, $color: $dark-text-color) {
+  font-size: $fs;
+  font-weight: $fw;
+  line-height: $lh;
+  color: $color;
+}
+
+@mixin button(
+  $bg: $main-color,
+  $color: $secondary-color,
+  $hoverBg: $secondary-color,
+  $hoverColor: $main-color,
+  $hoverBorder: 0.25rem solid $main-color,
+  $fs: 1rem,
+  $fw: 600,
+  $lh: 1.5,
+  $border: 0.25rem solid $main-color,
+  $borderRadius: 0.5rem,
+  $padding: 0.5rem 1rem
+) {
+  background-color: $bg;
+  color: $color;
+  font-size: $fs;
+  font-weight: $fw;
+  line-height: $lh;
+  border: $border;
+  border-radius: $borderRadius;
+  padding: $padding;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $hoverBg;
+    color: $hoverColor;
+  }
+}

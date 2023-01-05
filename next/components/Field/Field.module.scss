@@ -1,0 +1,11 @@
+@import '../../assets/scss/variables';
+@import '../../assets/scss/mixins';
+
+.field_container {
+  @include flex($ff: column);
+  gap: 0.5rem;
+}
+
+.error {
+  color: $hard;
+}

@@ -24,8 +24,24 @@ dev-next-restart:
 	docker compose -f docker-compose.dev.yaml restart next
 dev-next-up-recreate:
 	docker compose -f docker-compose.dev.yaml up -d --force-recreate next
+dev-next-stop:
+	docker compose -f docker-compose.dev.yaml stop next
+dev-next-down:
+	docker compose -f docker-compose.dev.yaml down next
 dev-pg:
 	docker compose -f docker-compose.dev.yaml exec pg psql -U diet
+dev-pg-logs:
+	docker compose -f docker-compose.dev.yaml logs pg
+dev-pg-restart:
+	docker compose -f docker-compose.dev.yaml restart pg
+dev-pg-up:
+	docker compose -f docker-compose.dev.yaml up -d pg
+dev-pg-up-recreate:
+	docker compose -f docker-compose.dev.yaml up -d --force-recreate pg
+dev-pg-stop:
+	docker compose -f docker-compose.dev.yaml stop pg
+dev-pg-down:
+	docker compose -f docker-compose.dev.yaml down pg
 help:
 	@echo "dev-up: start dev environment"
 	@echo "dev-down: stop dev environment"

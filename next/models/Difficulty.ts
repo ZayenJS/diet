@@ -1,6 +1,10 @@
-import { DifficultyEnum } from '@prisma/client';
+import { Difficulty as DifficultyEnum } from '@prisma/client';
 
 export class Difficulty {
+  public static getAll() {
+    return Object.values(DifficultyEnum);
+  }
+
   public static getDifficultyLabel(difficulty: DifficultyEnum) {
     switch (difficulty) {
       case DifficultyEnum.EASY:

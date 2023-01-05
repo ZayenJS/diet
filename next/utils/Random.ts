@@ -1,10 +1,13 @@
-type RandomType = 'integer' | 'float' | 'string' | 'boolean' | 'array' | 'object';
+type RandomType = 'id' | 'integer' | 'float' | 'string' | 'boolean' | 'array' | 'object';
 
 export class Random<T> {
   private _data: T;
 
   constructor(type: RandomType, length?: number) {
     switch (type) {
+      case 'id':
+        this._data = Random.id() as unknown as T;
+        break;
       case 'integer':
         this._data = Random.integer(0, length ?? 100) as unknown as T;
         break;
@@ -35,7 +38,14 @@ export class Random<T> {
     return this._data;
   }
 
-  public static integer(min: number = 0, max: number = 100) {
+  public static id() {
+    return `${Random.string(5)}-${Random.integer(10_000, 99_999)}-${Random.string(5)}-${Random.integer(
+      100_000_000_000,
+      999_999_999_999,
+    )}`;
+  }
+
+  public static integer(min: number = 1, max: number = 100) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 

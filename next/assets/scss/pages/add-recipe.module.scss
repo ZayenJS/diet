@@ -1,0 +1,36 @@
+@import '../variables';
+@import '../mixins';
+
+.container {
+  @include flex($ff: column);
+  gap: 2rem;
+
+  legend {
+    @include text($fs: 1.5rem, $fw: 600);
+  }
+
+  hr {
+    border: 0;
+    height: 0.25rem;
+    background-color: $secondary-color;
+    width: 80%;
+    border-radius: 2rem;
+  }
+}
+
+.button {
+  @include button;
+}
+
+.general {
+  @include flex($ff: column);
+  gap: 1rem;
+}
+
+.general > .row,
+.ingredient_field,
+.macros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}

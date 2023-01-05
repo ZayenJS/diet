@@ -1,0 +1,34 @@
+@import '../../assets/scss/variables';
+@import '../../assets/scss/mixins';
+
+.container {
+  @include flex(center, center);
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  width: auto;
+  position: absolute;
+  top: 0;
+  right: 0.5rem;
+  z-index: 1;
+
+  &.scrollable {
+    justify-content: flex-start;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+}
+
+.tag {
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.more_tags {
+  background-color: $main-color;
+  color: $dark-text-color;
+}

@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { templateReducer } from './template';
+import { globalReducer } from './global';
+import { recipesReducer } from './recipes';
 
-const rootReducer = combineReducers({ template: templateReducer });
+const rootReducer = combineReducers({ global: globalReducer, recipes: recipesReducer });
 
 export default rootReducer;

@@ -12,30 +12,32 @@ datasource db {
 }
 
 model Recipe {
-  id              Int            @id @default(autoincrement())
-  name            String
-  description     String?
-  difficulty      DifficultyEnum
-  rating          Int
-  cost            Float
-  preparationTime Int            @map("preparation_time")
-  cookingTime     Int            @map("cooking_time")
-  restTime        Int            @map("rest_time")
-  thumbnailUrl    String         @map("thumbnail_url")
-  forHowMany      Int            @map("for_how_many")
-  createdAt       DateTime       @default(now()) @map("created_at")
-  updatedAt       DateTime       @updatedAt @map("updated_at")
+  id              Int           @id @default(autoincrement())
+  name            String        @db.VarChar(100)
+  description     String?       @db.Text
+  difficulty      Difficulty
+  rating          Int           @db.Integer
+  cost            Float         @db.Real
+  preparationTime Int           @map("preparation_time")
+  cookingTime     Int           @map("cooking_time")
+  restTime        Int           @map("rest_time")
+  thumbnailUrl    String        @map("thumbnail_url")
+  forHowMany      Int           @map("for_how_many")
+  calories        Int?          @db.Integer
+  protein         Float?        @db.Real
+  fat             Float?        @db.Real
+  saturated       Float?        @db.Real
+  carbs           Float?        @db.Real
+  sugar           Float?        @db.Real
   steps           Step[]
   ingredients     Ingredient[]
   images          RecipeImage[]
-  tags            Tag[]          @relation("recipes_tags")
-  calories        Int?
-  protein         Float?
-  fat             Float?
-  saturated       Float?
-  carbs           Float?
-  sugar           Float?
-  tools           Tool[]         @relation("recipes_tools")
+  tags            Tag[]         @relation("recipes_tags")
+  category        Category?     @relation(fields: [categoryId], references: [id], name: "recipes_categories")
+  categoryId      Int?          @map("category_id")
+  tools           Tool[]        @relation("recipes_tools")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
 
   @@unique([name], name: "recipe_name_unique")
   @@index([name], name: "recipe_name")
@@ -48,11 +50,11 @@ model Recipe {
 
 model Tool {
   id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(100)
   recipeId  Int?     @map("recipe_id")
+  recipes   Recipe[] @relation("recipes_tools")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  name      String
-  recipes   Recipe[] @relation("recipes_tools")
 
   @@index([name], name: "tool_name")
   @@map("tools")
@@ -60,32 +62,44 @@ model Tool {
 
 model Tag {
   id        Int      @id @default(autoincrement())
-  name      String
+  name      String   @unique @db.VarChar(30)
+  color     String   @default("#fff") @db.VarChar(7)
+  recipes   Recipe[] @relation("recipes_tags")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  recipes   Recipe[] @relation("recipes_tags")
 
   @@map("tags")
 }
 
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(30)
+  color     String   @default("#fff") @db.VarChar(7)
+  recipes   Recipe[] @relation("recipes_categories")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("categories")
+}
+
 model Step {
   id        Int      @id @default(autoincrement())
+  text      String   @db.Text
   recipeId  Int?     @map("recipe_id")
   recipe    Recipe?  @relation(fields: [recipeId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  text      String
 
   @@map("steps")
 }
 
 model Product {
   id          Int          @id @default(autoincrement())
+  name        String       @unique @db.VarChar(100)
+  images      String?      @db.Text
+  ingredients Ingredient[]
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
-  name        String
-  images      String?
-  ingredients Ingredient[]
 
   @@index([name], name: "product_name")
   @@map("products")
@@ -98,7 +112,7 @@ model Ingredient {
   recipeId  Int?     @map("recipe_id")
   recipe    Recipe?  @relation(fields: [recipeId], references: [id])
   unit      Unit
-  amount    Float
+  amount    Float    @db.Real
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -109,11 +123,11 @@ model Ingredient {
 
 model RecipeImage {
   id        Int      @id @default(autoincrement())
+  url       String   @db.Text
   recipeId  Int?     @map("recipe_id")
   recipe    Recipe?  @relation(fields: [recipeId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  url       String
 
   @@map("recipe_images")
 }
@@ -125,12 +139,12 @@ enum Role {
   @@map("roles")
 }
 
-enum DifficultyEnum {
+enum Difficulty {
   EASY
   MEDIUM
   HARD
 
-  @@map("difficulty_enum")
+  @@map("difficulty")
 }
 
 enum Unit {
@@ -144,5 +158,5 @@ enum Unit {
   PINCH
   PIECE
 
-  @@map("unit_enum")
+  @@map("unit")
 }

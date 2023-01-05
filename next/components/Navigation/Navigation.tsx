@@ -15,6 +15,9 @@ const Navigation: FC<NavigationProps> = () => {
         <li>
           <Link href={'/recettes'}>Recettes</Link>
         </li>
+        <li>
+          <Link href={'/recettes/ajouter'}>Ajouter Recette</Link>
+        </li>
       </ul>
     </nav>
   );
