@@ -2,10 +2,75 @@
 @import '../../assets/scss/mixins';
 
 .field_container {
-  @include flex($ff: column);
-  gap: 0.5rem;
+  @include flex($ff: column nowrap, $gap: 0.5rem);
+
+  textarea {
+    height: 2.5rem;
+    min-height: 2.5rem;
+    resize: vertical;
+  }
 }
 
-.error {
-  color: $hard;
+.label {
+  @include text($fs: 1.1rem, $fw: 600);
+  position: relative;
+  width: fit-content;
+}
+
+.field:not([type='file']) {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 0.1rem solid $secondary-color;
+}
+
+.difficulty_container {
+  @include flex($ff: row nowrap, $justify: flex-start, $gap: 0.5rem);
+
+  .label {
+    font-size: 1.5rem;
+    color: $color-gray-700;
+    @include flex(center, center);
+  }
+
+  .difficulty {
+    display: none;
+
+    &--easy {
+      color: $easy;
+    }
+
+    &--medium {
+      color: $medium;
+    }
+
+    &--hard {
+      color: $hard;
+    }
+  }
+}
+
+.rating_container {
+  @include flex($ff: row nowrap, $gap: 0);
+
+  .label {
+    color: gold;
+    font-size: 1.5rem;
+    @include flex(center, center);
+  }
+
+  .rating {
+    display: none;
+
+    &--selected {
+      color: gold;
+    }
+  }
+}
+
+.field_container--checkbox {
+  @include flex($ff: row nowrap, $gap: 0.5rem);
+}
+
+span.error {
+  @include error;
 }

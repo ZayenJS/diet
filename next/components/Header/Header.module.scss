@@ -2,12 +2,11 @@
 @import '../../assets/scss/variables';
 
 .container {
-  @include flex(center, space-between);
+  @include flex(center, space-between, $gap: 1rem);
   background-color: $main-color;
   color: $secondary-color;
   font-weight: 600;
   padding: 2rem;
-  gap: 1rem;
 }
 
 .brand {

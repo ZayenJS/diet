@@ -6,20 +6,51 @@
   gap: 2rem;
 
   legend {
+    @include flex(center, $gap: 0.5rem);
     @include text($fs: 1.5rem, $fw: 600);
+    position: relative;
+    margin-block-end: 1.5rem;
   }
 
   hr {
     border: 0;
     height: 0.25rem;
     background-color: $secondary-color;
-    width: 80%;
+    width: 90%;
     border-radius: 2rem;
   }
 }
 
+.header {
+  @include grid($gap: 1rem, $templateColumns: 1fr 6rem);
+}
+
 .button {
-  @include button;
+  @include flex(center, center);
+  @include button($borderRadius: 0.5rem, $width: fit-content);
+}
+
+.add_button {
+  $button-height: 2rem;
+  @include flex(center, center);
+  @include button($borderRadius: 50%, $height: $button-height, $width: $button-height, $padding: 0);
+}
+
+.trash_button {
+  $button-height: 2rem;
+  @include flex(center, center);
+  @include button(
+    $borderRadius: 50%,
+    $height: $button-height,
+    $width: $button-height,
+    $padding: 0,
+    $bg: transparent,
+    $border: none,
+    $hoverBg: transparent,
+    $hoverColor: $hard,
+    $color: $hard,
+    $fs: 2rem
+  );
 }
 
 .general {
@@ -27,10 +58,102 @@
   gap: 1rem;
 }
 
-.general > .row,
-.ingredient_field,
+.steps {
+  @include flex($ff: column nowrap, $gap: 1rem);
+  counter-reset: step-count;
+
+  .step {
+    @include grid($templateColumns: 1rem 1fr 2rem, $gap: 1rem);
+
+    &::before {
+      content: counter(step-count) '. ';
+      counter-increment: step-count;
+      @include text($fs: 1.5rem, $fw: 600);
+      color: $secondary-color;
+    }
+  }
+}
+
+.info-grid {
+  @include grid($templateColumns: 1fr, $templateAreas: 'prep' 'cook' 'rest' 'people' 'cost' 'difficulty', $gap: 1rem);
+
+  @include sm {
+    @include grid(
+      $templateColumns: repeat(2, 1fr),
+      $templateAreas: 'prep cook' 'rest people' 'cost difficulty',
+      $gap: 1rem
+    );
+  }
+
+  @include md {
+    @include grid(
+      $templateColumns: repeat(3, 1fr),
+      $templateAreas: 'prep cook rest' 'people cost difficulty',
+      $gap: 1rem
+    );
+  }
+}
+
+.prep_container {
+  grid-area: prep;
+}
+
+.cook_container {
+  grid-area: cook;
+}
+
+.rest_container {
+  grid-area: rest;
+}
+
+.cost_container {
+  grid-area: cost;
+}
+
+.cost_field {
+  text-align: center;
+}
+
+.people_container {
+  grid-area: people;
+}
+
+.difficulty_container {
+  grid-area: difficulty;
+}
+
+.rating_container {
+  grid-area: rate;
+}
+
 .macros {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  @include grid($templateColumns: repeat(1, 1fr), $gap: 1rem);
+
+  @include sm {
+    @include grid($templateColumns: repeat(2, 1fr), $gap: 1rem);
+  }
+
+  @include md {
+    @include grid($templateColumns: repeat(3, 1fr), $gap: 1rem);
+  }
+}
+
+.ingredient_field {
+  @include grid($templateColumns: repeat(3, 1fr) 2rem, $gap: 1rem);
+}
+
+.added_ingredients {
+  @include grid($templateColumns: 1fr 2rem, $gap: 1rem, $align: end);
+
+  .ingredient_field {
+    @include grid($templateColumns: repeat(3, 1fr), $gap: 1rem);
+  }
+}
+
+.added_images {
+  @include grid($templateColumns: repeat(3, 1fr) 2rem, $gap: 1rem);
+}
+
+.added_image {
+  @include grid($templateColumns: 1fr 2rem, $gap: 1rem, $align: end);
 }

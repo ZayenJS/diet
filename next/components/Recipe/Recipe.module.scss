@@ -4,10 +4,10 @@
 .container {
   color: $dark-text-color;
   max-width: 40rem;
-  @include flex($ff: column nowrap);
+  @include flex($ff: column nowrap, $gap: 0);
 
   .title {
-    @include flex(center, center);
+    @include flex(center, center, $gap: 0);
     min-height: 3rem;
     font-weight: 600;
     text-align: center;
@@ -24,15 +24,13 @@
   }
 
   .list {
-    @include flex(center, flex-end);
-    gap: 1rem;
+    @include flex(center, flex-end, $gap: 1rem);
     padding: 0.5rem 0;
   }
 
   .for_how_many,
   .total_time {
-    @include flex(center, center);
-    gap: 0.25rem;
+    @include flex(center, center, $gap: 0.25rem);
 
     &:before {
       color: $secondary-color;
@@ -47,7 +45,7 @@
   }
 
   .cost {
-    @include flex(center, center);
+    @include flex(center, center, $gap: 0);
 
     &:after {
       color: $dark-text-color;
@@ -56,12 +54,11 @@
   }
 
   .difficulty {
-    @include flex(center, center);
+    @include flex(center, center, $gap: 0);
   }
 
   %difficulty_icon {
-    @include flex(center, center);
-    gap: 0.25rem;
+    @include flex(center, center, $gap: 0.25rem);
 
     &:before {
       color: $secondary-color;

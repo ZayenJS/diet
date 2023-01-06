@@ -36,11 +36,31 @@
   }
 }
 
-@mixin flex($align: stretch, $justify: flex-start, $ff: row nowrap) {
+@mixin flex($align: stretch, $justify: flex-start, $ff: row nowrap, $gap: 1rem) {
   display: flex;
   align-items: $align;
   justify-content: $justify;
   flex-flow: $ff;
+  gap: $gap;
+}
+
+@mixin grid(
+  $align: stretch,
+  $justify: flex-start,
+  $gap: 1rem,
+  $autoFlow: row,
+  $templateColumns: 1fr,
+  $templateRows: 1fr,
+  $templateAreas: none
+) {
+  display: grid;
+  align-items: $align;
+  justify-content: $justify;
+  grid-auto-flow: $autoFlow;
+  gap: $gap;
+  grid-template-columns: $templateColumns;
+  grid-template-rows: $templateRows;
+  grid-template-areas: $templateAreas;
 }
 
 @mixin layout($rows: 10rem auto 5rem, $areas: 'header' 'main' 'footer', $minHeight: 100vh) {
@@ -68,7 +88,9 @@
   $lh: 1.5,
   $border: 0.25rem solid $main-color,
   $borderRadius: 0.5rem,
-  $padding: 0.5rem 1rem
+  $padding: 0.5rem 1rem,
+  $height: 2.5rem,
+  $width: auto
 ) {
   background-color: $bg;
   color: $color;
@@ -78,10 +100,54 @@
   border: $border;
   border-radius: $borderRadius;
   padding: $padding;
+  height: $height;
+  width: $width;
   transition: all 0.2s ease;
 
   &:hover {
     background-color: $hoverBg;
     color: $hoverColor;
   }
+}
+
+@mixin error(
+  $color: darken($hard, 20%),
+  $border: 1px solid $hard,
+  $borderRadius: 0.25rem,
+  $bg: transparentize($hard, 0.9),
+  $padding: 0.5rem
+) {
+  color: $color;
+  border: $border;
+  border-radius: $borderRadius;
+  background-color: $bg;
+  padding: $padding;
+}
+
+@mixin success(
+  $color: darken($easy, 20%),
+  $border: 1px solid $easy,
+  $borderRadius: 0.25rem,
+  $bg: transparentize($easy, 0.9),
+  $padding: 0.5rem
+) {
+  color: $color;
+  border: $border;
+  border-radius: $borderRadius;
+  background-color: $bg;
+  padding: $padding;
+}
+
+@mixin warning(
+  $color: darken($medium, 30%),
+  $border: 1px solid $medium,
+  $borderRadius: 0.25rem,
+  $bg: transparentize(darken($medium, 10%), 0.9),
+  $padding: 0.5rem
+) {
+  color: $color;
+  border: $border;
+  border-radius: $borderRadius;
+  background-color: $bg;
+  padding: $padding;
 }

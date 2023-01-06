@@ -2,7 +2,7 @@
 @import '../../assets/scss/mixins';
 
 .container {
-  @include flex(stretch, center);
+  @include flex(stretch, center, $gap: 0);
   width: 50%;
 
   input {

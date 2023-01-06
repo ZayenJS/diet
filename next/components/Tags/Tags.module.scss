@@ -2,8 +2,7 @@
 @import '../../assets/scss/mixins';
 
 .container {
-  @include flex(center, center);
-  gap: 0.5rem;
+  @include flex(center, center, $gap: 0.5rem);
   padding: 0.5rem 0;
   width: auto;
   position: absolute;

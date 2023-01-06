@@ -1,24 +1,21 @@
 import Link from 'next/link';
 import { FC } from 'react';
+import { Config } from '../../config';
 
 import classes from './Navigation.module.scss';
 
 export interface NavigationProps {}
 
 const Navigation: FC<NavigationProps> = () => {
+  const links = Config.router.getRoutesArray().map((route) => (
+    <li key={route.name}>
+      <Link href={route.href}>{route.text}</Link>
+    </li>
+  ));
+
   return (
     <nav className={classes.container}>
-      <ul>
-        <li>
-          <Link href="/">Accueil</Link>
-        </li>
-        <li>
-          <Link href={'/recettes'}>Recettes</Link>
-        </li>
-        <li>
-          <Link href={'/recettes/ajouter'}>Ajouter Recette</Link>
-        </li>
-      </ul>
+      <ul>{links}</ul>
     </nav>
   );
 };

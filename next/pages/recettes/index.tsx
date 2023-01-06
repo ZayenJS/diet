@@ -79,6 +79,7 @@ export const getServerSideProps = async (req: NextApiRequest) => {
       [sort as string]: direction,
     };
   }
+
   const recipes = await prisma.recipe.findMany(params);
   const totalRecipes = await prisma.recipe.count();
   const pages = Math.ceil(totalRecipes / Number(perPage));

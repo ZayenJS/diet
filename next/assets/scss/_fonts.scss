@@ -45,62 +45,76 @@
 
 .diet-before-chef:before,
 .diet-after-chef:after {
-  content: '\e1';
+  content: '\e100';
 }
 .diet-before-star-full:before,
 .diet-after-star-full:after {
-  content: '\e2';
+  content: '\e101';
 }
 .diet-before-star-half:before,
 .diet-after-star-half:after {
-  content: '\e3';
+  content: '\e102';
 }
 .diet-before-star-empty:before,
 .diet-after-star-empty:after {
-  content: '\e4';
+  content: '\e103';
 }
 .diet-before-people:before,
 .diet-after-people:after {
-  content: '\e5';
+  content: '\e104';
 }
 .diet-before-clock:before,
 .diet-after-clock:after {
-  content: '\e6';
+  content: '\e105';
 }
 
 .diet-before-cart:before,
 .diet-after-cart:after {
-  content: '\e7';
+  content: '\e106';
 }
 
 .diet-before-euro:before,
 .diet-after-euro:after {
-  content: '\e8';
+  content: '\e107';
 }
 
 .diet-before-search:before,
 .diet-after-search:after {
-  content: '\e9';
+  content: '\e108';
 }
 
 .diet-before-left-arrow:before,
 .diet-after-left-arrow:after {
-  content: '\e10';
+  content: '\e109';
 }
 .diet-before-left-arrow-double:before,
 .diet-after-left-arrow-double:after {
-  content: '\e11';
+  content: '\e109';
 }
 
 .diet-before-right-arrow:before,
 .diet-after-right-arrow:after {
   display: inline-block;
-  content: '\e10';
+  content: '\e110';
   transform: rotate(180deg);
 }
 .diet-before-right-arrow-double:before,
 .diet-after-right-arrow-double:after {
   display: inline-block;
-  content: '\e11';
+  content: '\e110';
   transform: rotate(180deg);
+}
+
+.diet-before-trash:before,
+.diet-after-trash:after {
+  content: '\e111';
+}
+
+.diet-before-plus:before,
+.diet-after-plus:after {
+  content: '\e112';
+}
+.diet-before-cross:before,
+.diet-after-cross:after {
+  content: '\e113';
 }

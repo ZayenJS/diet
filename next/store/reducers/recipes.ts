@@ -84,7 +84,7 @@ export const recipesReducer = createReducer(INITIAL_STATE, (builder) => {
           return;
         }
 
-        if (type === 'steps') {
+        if (type === 'steps' && typeof action.payload.value === 'string') {
           state.steps[id] = action.payload.value;
           return;
         }

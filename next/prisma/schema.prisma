@@ -11,40 +11,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                 Int            @id @default(autoincrement())
+  email              String         @unique @db.VarChar(255)
+  auth_token         String?        @map("auth_token")
+  auth_token_expires DateTime?      @map("auth_token_expires")
+  first_name         String?        @map("first_name")
+  last_name          String?        @map("last_name")
+  gender             Gender
+  role               Role           @default(USER)
+  birth_date         DateTime?      @map("birth_date")
+  height             Float?         @db.Real
+  weight             Float?         @db.Real
+  activityLevel      ActivityLevel? @map("activity_level")
+  favoriteRecipes    Recipe[]       @relation("users_favorite_recipes")
+  createdRecipes     Recipe[]
+  ratedRecipes       RecipeRating[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([email], name: "user_email")
+  @@index([auth_token], name: "user_auth_token")
+  @@index([auth_token_expires], name: "user_auth_token_expires")
+  @@map("users")
+}
+
+model RecipeRating {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int      @map("recipe_id")
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  rating    Float    @db.Real
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("recipe_ratings")
+}
+
 model Recipe {
-  id              Int           @id @default(autoincrement())
-  name            String        @db.VarChar(100)
-  description     String?       @db.Text
+  id              Int            @id @default(autoincrement())
+  name            String         @unique @db.VarChar(100)
+  description     String?        @db.Text
   difficulty      Difficulty
-  rating          Int           @db.Integer
-  cost            Float         @db.Real
-  preparationTime Int           @map("preparation_time")
-  cookingTime     Int           @map("cooking_time")
-  restTime        Int           @map("rest_time")
-  thumbnailUrl    String        @map("thumbnail_url")
-  forHowMany      Int           @map("for_how_many")
-  calories        Int?          @db.Integer
-  protein         Float?        @db.Real
-  fat             Float?        @db.Real
-  saturated       Float?        @db.Real
-  carbs           Float?        @db.Real
-  sugar           Float?        @db.Real
+  cost            Float          @db.Real
+  preparationTime Int            @map("preparation_time")
+  cookingTime     Int            @map("cooking_time")
+  restTime        Int            @map("rest_time")
+  thumbnailUrl    String         @map("thumbnail_url")
+  forHowMany      Int            @map("for_how_many")
+  rates           RecipeRating[]
   steps           Step[]
   ingredients     Ingredient[]
   images          RecipeImage[]
-  tags            Tag[]         @relation("recipes_tags")
-  category        Category?     @relation(fields: [categoryId], references: [id], name: "recipes_categories")
-  categoryId      Int?          @map("category_id")
-  tools           Tool[]        @relation("recipes_tools")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  favoriteUsers   User[]         @relation("users_favorite_recipes")
+  creatorId       Int            @map("creator_id")
+  creator         User           @relation(fields: [creatorId], references: [id])
+  tags            Tag[]          @relation("recipes_tags")
+  category        Category?      @relation(fields: [categoryId], references: [id], name: "recipes_categories")
+  categoryId      Int?           @map("category_id")
+  tools           Tool[]         @relation("recipes_tools")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
 
-  @@unique([name], name: "recipe_name_unique")
   @@index([name], name: "recipe_name")
   @@index([difficulty], name: "recipe_difficulty")
-  @@index([rating], name: "recipe_rating")
-  @@index([calories], name: "macro_calories")
-  @@index([protein], name: "macro_protein")
   @@map("recipes")
 }
 
@@ -96,12 +128,22 @@ model Step {
 model Product {
   id          Int          @id @default(autoincrement())
   name        String       @unique @db.VarChar(100)
-  images      String?      @db.Text
+  image       String?      @db.Text
+  calories    Float?       @db.Real
+  protein     Float?       @db.Real
+  fat         Float?       @db.Real
+  saturated   Float?       @db.Real
+  carbs       Float?       @db.Real
+  sugar       Float?       @db.Real
+  fiber       Float?       @db.Real
   ingredients Ingredient[]
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
 
   @@index([name], name: "product_name")
+  @@index([calories], name: "product_calories")
+  @@index([protein], name: "product_protein")
+  @@index([sugar], name: "product_sugar")
   @@map("products")
 }
 
@@ -130,6 +172,24 @@ model RecipeImage {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("recipe_images")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+
+  @@map("genders")
+}
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHT
+  MODERATE
+  ACTIVE
+  VERY_ACTIVE
+
+  @@map("activity_levels")
 }
 
 enum Role {

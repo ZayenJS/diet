@@ -2,7 +2,6 @@
 
 .container {
   ul {
-    @include flex(center, center);
-    gap: 1rem;
+    @include flex(center, center, $gap: 1rem);
   }
 }
