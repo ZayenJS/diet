@@ -5,53 +5,48 @@ import Head from 'next/head';
 import { APP_NAME } from '../../constants';
 import Field from '../../components/Field/Field';
 import { useSelector } from 'react-redux';
-import { State, useAppDispatch } from '../../store/';
+import { State, useAppDispatch } from '../../store';
 import { prisma } from '../../lib/prisma';
 
 import classes from '../../assets/scss/pages/add-recipe.module.scss';
-import { Product } from '@prisma/client';
 import { createProduct } from '../../store/actions/products';
 
 interface Props {
-  takenRecipeNames: string[];
-  products: Partial<Product>[];
+  takenProductsNames: string[];
 }
 
-const RecipesPage: FC<Props> = ({ takenRecipeNames = [], products }) => {
+const RecipesPage: FC<Props> = ({ takenProductsNames = [] }) => {
   const firstRender = useRef(true);
 
   const dispatch = useAppDispatch();
 
-  const recipeName = useSelector((state: State) => state.recipes.name);
+  const productName = useSelector((state: State) => state.products.create.name);
+  const isLoading = useSelector((state: State) => state.products.loading);
 
-  const nameAlreadyTaken = takenRecipeNames.includes(recipeName);
+  const nameAlreadyTaken = takenProductsNames.includes(productName);
 
   const createProductData = useSelector((s: State) => s.products.create);
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('submit');
-    dispatch(
-      createProduct({
-        data: createProductData,
-      }),
-    );
+
+    dispatch(createProduct({ data: createProductData }));
   };
 
   return (
     <>
       <Head>
-        <title>{APP_NAME} | Ajouter une recette</title>
+        <title>{APP_NAME} | Ajouter un aliment</title>
       </Head>
       <Layout>
         <form onSubmit={onSubmitHandler} className={classes.container}>
           <fieldset className={classes.general}>
             <legend>Informations générales</legend>
             <Field
-              label="Nom du produit"
+              label="Nom de l'aliment"
               name="name"
               reducerName="products"
               type="text"
-              error={nameAlreadyTaken ? 'Un produit avec ce nom existe déjà.' : ''}
+              error={nameAlreadyTaken ? 'Un aliment avec ce nom existe déjà.' : ''}
             />
           </fieldset>
           <hr />
@@ -68,10 +63,10 @@ const RecipesPage: FC<Props> = ({ takenRecipeNames = [], products }) => {
           <hr />
 
           <fieldset>
-            <legend>Photos</legend>
-            <Field label="Image" name="image" reducerName="products" type="file" />
+            <legend>Image</legend>
+            <Field label="Choisissez une image" name="image" reducerName="products" type="file" withPreview />
           </fieldset>
-          <button className={classes.button}>Ajouter</button>
+          <button className={classes.button}>{isLoading ? 'Chargement' : 'Ajouter'}</button>
         </form>
       </Layout>
     </>
@@ -86,16 +81,9 @@ export const getServerSideProps = async () => {
     },
   });
 
-  const recipes = await prisma.recipe.findMany({
-    select: {
-      name: true,
-    },
-  });
-
   return {
     props: {
-      takenRecipeNames: recipes.map((r) => r.name.toLowerCase()),
-      products,
+      takenProductsNames: products.map((r) => r.name.toLowerCase()),
     },
   };
 };

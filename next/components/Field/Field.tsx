@@ -1,4 +1,4 @@
-import { CSSProperties, FC, useRef } from 'react';
+import { CSSProperties, FC, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Difficulty as DifficultyEnum } from '@prisma/client';
 import { Difficulty } from '../../models/Difficulty';
@@ -8,6 +8,8 @@ import { Random } from '../../utils/Random';
 
 import classes from './Field.module.scss';
 import { Rating } from '../../models/Rating';
+import Portal from '../Portal/Portal';
+import Modal from '../Modal/Modal';
 
 type FieldType =
   | 'text'
@@ -29,6 +31,11 @@ type FieldType =
 
 type HTMLFieldType = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 
+interface FakeImagePreview {
+  id: string;
+  url: string;
+}
+
 export interface FieldProps {
   type: FieldType;
   name: string;
@@ -38,6 +45,8 @@ export interface FieldProps {
     label: string;
     field: string;
     error: string;
+    preview: string;
+    previewItem: string;
   }>;
   dropDownOptions?: {
     value: string;
@@ -54,6 +63,8 @@ export interface FieldProps {
   label?: string;
   placeholder?: string;
   multiple?: boolean;
+  maxFiles?: number;
+  withPreview?: boolean;
   value?: string | number | readonly string[];
   children?: React.ReactNode | React.ReactNode[];
 
@@ -88,8 +99,14 @@ const Field: FC<FieldProps> = ({
   onKeyUp,
   placeholder,
   value,
+  withPreview,
+  maxFiles = 1,
   children,
 }) => {
+  const [selectedPreview, setSelectedPreview] = useState<FakeImagePreview>();
+  const [previews, setPreviews] = useState<FakeImagePreview[]>([]);
+  const [removePreviewModalVisible, setRemovePreviewModalVisible] = useState(false);
+
   const dispatch = useDispatch();
   const stateValue = useSelector((state: State) => state?.[reducerName]?.[name as keyof State[keyof State]]);
 
@@ -99,10 +116,44 @@ const Field: FC<FieldProps> = ({
     if (onChange) return onChange(event);
 
     if (event.target.type === 'file') {
-      return dispatch(inputChange({ name, reducerName, value: event.target.id }));
+      const target = event.target as HTMLInputElement;
+      const files = Array.from(target.files ?? []);
+
+      if (withPreview) {
+        if (files) {
+          const _previews: FakeImagePreview[] = [];
+
+          for (const file of files) {
+            const url = URL.createObjectURL(file);
+            const id = Random.id();
+            _previews.push({ id, url });
+          }
+
+          setPreviews(_previews);
+        }
+      }
+
+      return dispatch(inputChange({ name, reducerName, value: files }));
     }
 
     dispatch(inputChange({ name, reducerName, value: event.target.value }));
+  };
+
+  const _onRemovePreviewModalOpen = (preview: FakeImagePreview) => {
+    setRemovePreviewModalVisible(true);
+    setSelectedPreview(preview);
+  };
+
+  const _onRemovePreviewModalClose = () => {
+    setRemovePreviewModalVisible(false);
+    setSelectedPreview(undefined);
+  };
+
+  const _onRemovePreview = () => {
+    if (!selectedPreview) return;
+
+    setPreviews((prev) => prev.filter((preview) => preview.id !== selectedPreview.id));
+    _onRemovePreviewModalClose();
   };
 
   let field = null;
@@ -228,21 +279,61 @@ const Field: FC<FieldProps> = ({
       break;
 
     case 'file':
-      field = (
-        <input
-          className={`${classes.field} ${classNames?.field ?? ''}`}
-          type={type}
-          name={name}
-          id={_id}
-          style={style}
-          value={_value}
-          onChange={_onChange}
-          onBlur={onBlur}
-          onFocus={onFocus}
-          onClick={onClick}
-          multiple={multiple}
-        />
-      );
+      field =
+        maxFiles && previews.length >= maxFiles ? (
+          <div className={`${classes.preview} ${classNames?.preview ?? ''}`}>
+            {previews.map((preview) => (
+              <div key={Random.id()} className={`${classes.preview__item} ${classNames?.previewItem ?? ''}`}>
+                <img src={preview.url} alt="" />
+                <button
+                  type="button"
+                  className={`${classes.preview__button} diet-before-cross`}
+                  onClick={() => _onRemovePreviewModalOpen(preview)}
+                />
+              </div>
+            ))}
+
+            <Portal mount={removePreviewModalVisible} animate animationDuration={300}>
+              <Modal
+                visible={removePreviewModalVisible}
+                buttons={[
+                  {
+                    text: 'Annuler',
+
+                    onClick: _onRemovePreviewModalClose,
+                  },
+                  {
+                    text: 'Supprimer',
+                    onClick: _onRemovePreview,
+                  },
+                ]}>
+                <p>Êtes-vous sûr de vouloir supprimer cette image ?</p>
+              </Modal>
+            </Portal>
+          </div>
+        ) : (
+          <div className={classes['file-field__container']}>
+            <input
+              type={type}
+              name={name}
+              id={_id}
+              style={style}
+              value={_value}
+              onChange={_onChange}
+              onBlur={onBlur}
+              onFocus={onFocus}
+              onClick={onClick}
+              multiple={multiple}
+            />
+            <label
+              className={`
+            ${classes.field}
+            ${classNames?.field ?? ''}`}
+              htmlFor={_id}>
+              {label}
+            </label>
+          </div>
+        );
       break;
 
     case 'difficulty':
@@ -346,11 +437,11 @@ const Field: FC<FieldProps> = ({
       className={`${classes.field_container} ${type === 'checkbox' ? classes['field_container--checkbox'] : ''} ${
         classNames?.container ?? ''
       }`}>
-      {label && type !== 'checkbox' ? (
+      {label && ['checkbox', 'file'].includes(type) ? null : (
         <label className={`${classes.label} ${classNames?.label ?? ''}`} htmlFor={_id}>
           {label}
         </label>
-      ) : null}
+      )}
       {field}
       {error ? <span className={`${classes.error} ${classNames?.error ?? ''}`}>{error}</span> : ''}
     </div>

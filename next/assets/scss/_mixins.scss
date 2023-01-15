@@ -90,8 +90,15 @@
   $borderRadius: 0.5rem,
   $padding: 0.5rem 1rem,
   $height: 2.5rem,
-  $width: auto
+  $width: auto,
+  $center: true
 ) {
+  @if ($center) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   background-color: $bg;
   color: $color;
   font-size: $fs;

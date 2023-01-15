@@ -23,6 +23,19 @@
   border: 0.1rem solid $secondary-color;
 }
 
+.file-field__container {
+  margin-block-end: 1rem;
+
+  input[type='file'] {
+    display: none;
+  }
+
+  :is(.field) {
+    @include button($bg: $main-color, $color: $secondary-color);
+    width: fit-content;
+  }
+}
+
 .difficulty_container {
   @include flex($ff: row nowrap, $justify: flex-start, $gap: 0.5rem);
 
@@ -69,6 +82,37 @@
 
 .field_container--checkbox {
   @include flex($ff: row nowrap, $gap: 0.5rem);
+}
+
+.preview {
+  @include flex($ff: row wrap, $gap: 0.5rem);
+  width: fit-content;
+
+  &__item {
+    position: relative;
+  }
+
+  img {
+    width: 16rem;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 0.25rem;
+  }
+}
+
+.preview__button {
+  @include flex(center, center);
+  @include text(1.2rem, $color: $light-text-color);
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1.75rem;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 1px 1px 0.25rem rgba(0, 0, 0, 0.5);
+  background-color: $hard;
+  cursor: pointer;
 }
 
 span.error {

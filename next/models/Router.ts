@@ -1,8 +1,10 @@
 export enum RouteName {
   HOME = 'HOME',
   RECIPES = 'RECIPES',
+  FOOD = 'FOOD',
   ADD_RECIPE = 'ADD_RECIPE',
-  ADD_PRODUCT = 'ADD_PRODUCT',
+  ADD_FOOD = 'ADD_FOOD',
+  UPLOADER_UPLOAD = 'UPLOADER_UPLOAD',
 }
 
 class Router {
@@ -43,7 +45,17 @@ class Router {
   }
 
   public getRouteHref(name: RouteName): string {
-    return this.getRoute(name).href;
+    if (!this.routes) {
+      throw new Error('Routes were not set.');
+    }
+
+    const href = this.getRoute(name).href;
+
+    if (!href) {
+      throw new Error(`Route ${name} has no href.`);
+    }
+
+    return href;
   }
 }
 
@@ -75,5 +87,7 @@ export const router = new Router({
   [RouteName.HOME]: new Route(RouteName.HOME, 'Accueil', '/'),
   [RouteName.RECIPES]: new Route(RouteName.RECIPES, 'Recettes', '/recettes'),
   [RouteName.ADD_RECIPE]: new Route(RouteName.ADD_RECIPE, 'Ajouter Recette', '/recettes/ajouter'),
-  [RouteName.ADD_PRODUCT]: new Route(RouteName.ADD_PRODUCT, 'Ajouter Produit', '/produits/ajouter'),
+  [RouteName.ADD_FOOD]: new Route(RouteName.ADD_FOOD, 'Ajouter Aliment', '/aliments/ajouter'),
+  [RouteName.FOOD]: new Route(RouteName.FOOD, 'Aliments', '/aliments'),
+  [RouteName.UPLOADER_UPLOAD]: new Route(RouteName.UPLOADER_UPLOAD, 'Uploader', '/upload'),
 });

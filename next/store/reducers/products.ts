@@ -14,6 +14,8 @@ export interface ProductsState {
     fiber: string;
     image: string;
   };
+  created: boolean;
+  loading: boolean;
 }
 
 const INITIAL_STATE: ProductsState = {
@@ -28,6 +30,8 @@ const INITIAL_STATE: ProductsState = {
     fiber: '',
     image: '',
   },
+  created: false,
+  loading: false,
 };
 
 export const productsReducer = createReducer(INITIAL_STATE, (builder) => {
@@ -42,20 +46,25 @@ export const productsReducer = createReducer(INITIAL_STATE, (builder) => {
         };
 
         state.create = create;
+        state.created = false;
       }
     })
     .addCase(createProduct.fulfilled, (state) => {
       console.log('Product created successfully');
 
-      // state.create = INITIAL_STATE.create;
+      state.create = INITIAL_STATE.create;
+      state.created = true;
     })
     .addCase(createProduct.rejected, (state) => {
       alert('Something went wrong while creating a product');
       // state.create = INITIAL_STATE.create;
+      state.created = false;
     })
     .addCase(createProduct.pending, (state) => {
       console.log('Creating a product...');
 
       // state.create = INITIAL_STATE.create;
+      state.created = false;
+      state.loading = true;
     });
 });
