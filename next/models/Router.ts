@@ -7,6 +7,11 @@ export enum RouteName {
   UPLOADER_UPLOAD = 'UPLOADER_UPLOAD',
 }
 
+export enum RouteType {
+  NAV = 'nav',
+  INTERNAL = 'internal',
+}
+
 class Router {
   constructor(routes?: Record<RouteName, Route>) {
     if (routes) {
@@ -23,9 +28,13 @@ class Router {
     return this.routes;
   }
 
-  public getRoutesArray(): Route[] {
+  public getRoutesArray(type?: RouteType): Route[] {
     if (!this.routes) {
       throw new Error('Routes were not set.');
+    }
+
+    if (type) {
+      return Object.values(this.routes).filter((route) => route.type === type);
     }
 
     return Object.values(this.routes);
@@ -63,11 +72,13 @@ export class Route {
   private _name: RouteName;
   private _text: string;
   private _href: string;
+  private _type: RouteType;
 
-  constructor(name: RouteName, text: string, href: string) {
+  constructor(name: RouteName, text: string, href: string, type?: RouteType) {
     this._name = name;
     this._text = text;
     this._href = href;
+    this._type = type ?? RouteType.NAV;
   }
 
   public get name(): RouteName {
@@ -81,6 +92,10 @@ export class Route {
   public get href(): string {
     return this._href;
   }
+
+  public get type(): RouteType {
+    return this._type;
+  }
 }
 
 export const router = new Router({
@@ -88,6 +103,6 @@ export const router = new Router({
   [RouteName.RECIPES]: new Route(RouteName.RECIPES, 'Recettes', '/recettes'),
   [RouteName.ADD_RECIPE]: new Route(RouteName.ADD_RECIPE, 'Ajouter Recette', '/recettes/ajouter'),
   [RouteName.ADD_FOOD]: new Route(RouteName.ADD_FOOD, 'Ajouter Aliment', '/aliments/ajouter'),
-  [RouteName.FOOD]: new Route(RouteName.FOOD, 'Aliments', '/aliments'),
-  [RouteName.UPLOADER_UPLOAD]: new Route(RouteName.UPLOADER_UPLOAD, 'Uploader', '/upload'),
+  [RouteName.FOOD]: new Route(RouteName.FOOD, 'Aliments', '/aliments', RouteType.INTERNAL),
+  [RouteName.UPLOADER_UPLOAD]: new Route(RouteName.UPLOADER_UPLOAD, 'Uploader', '/upload', RouteType.INTERNAL),
 });
