@@ -15,12 +15,13 @@ export interface TagsProps {
 
 const Tags: FC<TagsProps> = ({ tags, basePath, scrollable = true, showMore = false }) => {
   const [tagsToDisplay, setTagsToDisplay] = useState(Config.TAGS_TO_DISPLAY_ON_RECIPE.mobile);
+  const [showMoreTags, setShowMoreTags] = useState(false);
 
   const smallMinMediaQueryHandler = useCallback((event: MediaQueryListEvent) => {
     if (event.matches) return setTagsToDisplay(Config.TAGS_TO_DISPLAY_ON_RECIPE.desktop);
 
     setTagsToDisplay(Config.TAGS_TO_DISPLAY_ON_RECIPE.mobile);
-  }, [])
+  }, []);
 
   useEffect(() => {
     const mediaQuery = new MediaQuery(MediaQuerySize.MIN_SM, smallMinMediaQueryHandler).executeIfMatches();
@@ -60,12 +61,30 @@ const Tags: FC<TagsProps> = ({ tags, basePath, scrollable = true, showMore = fal
     .map((tag) => tag.name)
     .join(', ');
 
-  const moreTagsMarkup =
-    remainingTags > 0 ? (
-      <span title={remainingTagsNames} className={`${classes.tag} ${classes.more_tags}`}>
-        + {remainingTags}
+  const onMoreTagsClick = () => setShowMoreTags(!showMoreTags);
+
+  let moreTagsMarkup = null;
+
+  if (remainingTags > 0) {
+    const showMoreTagsText = showMoreTags ? '' : `+ ${remainingTags}`;
+    moreTagsMarkup = (
+      <button
+        onClick={onMoreTagsClick}
+        type="button"
+        title={remainingTagsNames}
+        className={`${classes.tag} ${classes.more_tags} ${showMoreTags ? 'diet-before-cross' : ''}`}>
+        {showMoreTagsText}
+      </button>
+    );
+  }
+
+  const remainingTagsMarkup = tags.slice(tagsToDisplay).map((tag) => (
+    <Link key={tag.id} href={`${basePath}/${tag.id}`}>
+      <span style={{ backgroundColor: tag.color }} key={tag.id} className={classes.tag}>
+        {tag.name}
       </span>
-    ) : null;
+    </Link>
+  ));
 
   return (
     <div
@@ -74,6 +93,9 @@ const Tags: FC<TagsProps> = ({ tags, basePath, scrollable = true, showMore = fal
       ${scrollable ? classes.scrollable : ''}
       `}>
       {tagsMarkup} {moreTagsMarkup}
+      <div className={`${classes.remaining_tags} ${showMoreTags ? classes.visible : classes.hidden}`}>
+        {remainingTagsMarkup}
+      </div>
     </div>
   );
 };

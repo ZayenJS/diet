@@ -1,3 +1,4 @@
+import { Unit } from '@prisma/client';
 import Link from 'next/link';
 import { FC } from 'react';
 import { FullRecipe } from '../../@types/types/FullRecipe';
@@ -24,7 +25,7 @@ const Recipe: FC<RecipeProps> = ({ recipe, detailed = false, scrollableTags = tr
 
     return (
       <div key={recipe.id} className={classes.container}>
-        <Link href={`/recettes/${recipe.id}`}>
+        <Link className={classes['title-container']} href={`/recettes/${recipe.id}`}>
           <strong className={classes.title}>{recipe.name}</strong>
         </Link>
         <div className={classes.thumbnail_container}>
@@ -51,6 +52,65 @@ const Recipe: FC<RecipeProps> = ({ recipe, detailed = false, scrollableTags = tr
     );
   }
 
+  // refactor in separate class + handle case with different units
+  // maybe convert eveything to grams first
+  const macros = recipe.ingredients?.reduce(
+    (acc, ingredient) => {
+      console.log({ ingredient });
+
+      const calories = ingredient.product.calories ?? acc.calories;
+      const protein = ingredient.product.protein ?? acc.protein;
+      const carbs = ingredient.product.carbs ?? acc.carbs;
+      const sugar = ingredient.product.sugar ?? acc.sugar;
+      const fat = ingredient.product.fat ?? acc.fat;
+      const saturatedFat = ingredient.product.saturated ?? acc.saturatedFat;
+      const fibers = ingredient.product.fiber ?? acc.fibers;
+
+      if (ingredient.unit === Unit.GRAM) {
+        const amount = ingredient.amount / 100;
+
+        acc.totalAmount += ingredient.amount;
+        acc.calories += calories * amount;
+        acc.protein += protein * amount;
+        acc.carbs += carbs * amount;
+        acc.sugar += sugar * amount;
+        acc.fat += fat * amount;
+        acc.saturatedFat += saturatedFat * amount;
+        acc.fibers += fibers * amount;
+
+        return acc;
+      }
+
+      return acc;
+    },
+    {
+      totalAmount: 0,
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      sugar: 0,
+      fat: 0,
+      saturatedFat: 0,
+      fibers: 0,
+    },
+  );
+
+  // get total for 100g
+  if (macros) {
+    const totalAmount = macros.totalAmount / 100;
+
+    macros.calories = macros.calories / totalAmount;
+    macros.protein = macros.protein / totalAmount;
+    macros.carbs = macros.carbs / totalAmount;
+    macros.sugar = macros.sugar / totalAmount;
+    macros.fat = macros.fat / totalAmount;
+    macros.saturatedFat = macros.saturatedFat / totalAmount;
+    macros.fibers = macros.fibers / totalAmount;
+    macros.totalAmount = 100;
+  }
+
+  console.log({ macros });
+
   return (
     <div className={classes.container_detailed} key={recipe.id}>
       <strong>{recipe.name}</strong>
@@ -62,12 +122,6 @@ const Recipe: FC<RecipeProps> = ({ recipe, detailed = false, scrollableTags = tr
       <p>{recipe.cookingTime} minutes (cooking)</p>
       <p>{recipe.restTime} minutes rest time</p>
       <p>{recipe.difficulty}</p>
-      <p>{recipe.calories} calories</p>
-      <p>{recipe.protein} protein</p>
-      <p>{recipe.carbs} carbohydrates</p>
-      <p>{recipe.sugar} sugar</p>
-      <p>{recipe.fat} fat</p>
-      <p>{recipe.saturated} saturated fat</p>
       <h2>Ingredients</h2>
       <ul>
         {recipe.ingredients?.map((ingredient) => (

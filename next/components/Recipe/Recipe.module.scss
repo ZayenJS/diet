@@ -6,6 +6,11 @@
   max-width: 40rem;
   @include flex($ff: column nowrap, $gap: 0);
 
+  .title-container {
+    width: fit-content;
+    align-self: center;
+  }
+
   .title {
     @include flex(center, center, $gap: 0);
     min-height: 3rem;

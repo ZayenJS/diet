@@ -1,4 +1,4 @@
-import { Recipe, RecipeImage, Step, Tag, Tool } from '@prisma/client';
+import { Category, Recipe, RecipeImage, RecipeRating, Step, Tag, Tool, User } from '@prisma/client';
 import { IngredientWithProduct } from './IngredientWithProduct';
 
 export interface FullRecipe extends Recipe {
@@ -7,4 +7,7 @@ export interface FullRecipe extends Recipe {
   images?: RecipeImage[];
   tags?: Tag[];
   tools?: Tool[];
+  author?: User;
+  rates?: RecipeRating[];
+  category?: Category;
 }

@@ -20,14 +20,58 @@
 }
 
 .tag {
+  @include flex(center, center, $gap: 0);
   color: #fff;
   padding: 0.25rem 0.5rem;
   border-radius: 0.5rem;
   font-size: 0.75rem;
   font-weight: 600;
+  min-height: 1rem;
+  min-width: 2rem;
+  line-height: 1;
+  box-shadow: 1px 1px 0.5rem rgba(0, 0, 0, 0.25);
+
+  &:before {
+    font-size: 0.75rem;
+    font-weight: 600 !important;
+  }
 }
 
 .more_tags {
   background-color: $main-color;
   color: $dark-text-color;
+  border: none;
+}
+
+.remaining_tags {
+  @include flex($ff: column nowrap, $gap: 0.5rem);
+  background-color: $main-color;
+  position: absolute;
+  top: 2.25rem;
+  right: 0;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transform-origin: top right;
+  box-shadow: 1px 1px 0.5rem rgba(0, 0, 0, 0.25);
+  transition: all 300ms ease-in-out;
+
+  a {
+    transition: all 300ms ease-in-out;
+  }
+
+  &.visible {
+    transform: scale(1);
+
+    > a {
+      opacity: 1;
+    }
+  }
+
+  &.hidden {
+    transform: scale(0);
+
+    > a {
+      opacity: 0;
+    }
+  }
 }
