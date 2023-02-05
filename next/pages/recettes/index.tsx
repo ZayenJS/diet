@@ -21,6 +21,7 @@ interface Props {
 
 const RecipesPage: FC<Props> = ({ recipes, page, pages }) => {
   let recipesMap: JSX.Element[] = [];
+  console.log({ recipes });
 
   if (recipes.length) {
     recipesMap = recipes.map((recipe) => <Recipe key={recipe.id} recipe={recipe} showMoreTags />);

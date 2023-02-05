@@ -54,11 +54,13 @@ export const productsReducer = createReducer(INITIAL_STATE, (builder) => {
 
       state.create = INITIAL_STATE.create;
       state.created = true;
+      state.loading = false;
     })
     .addCase(createProduct.rejected, (state) => {
       alert('Something went wrong while creating a product');
       // state.create = INITIAL_STATE.create;
       state.created = false;
+      state.loading = false;
     })
     .addCase(createProduct.pending, (state) => {
       console.log('Creating a product...');

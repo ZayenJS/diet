@@ -2,8 +2,8 @@ import { createAction } from '@reduxjs/toolkit';
 import { DeleteIngredientPayload, DeleteStepPayload } from './recipes.payload';
 
 export enum RecipesActionType {
-  DELETE_INGREDIENT = 'DELETE_INGREDIENT',
-  DELETE_STEP = 'DELETE_STEP',
+  DELETE_INGREDIENT = 'recipes:delete_ingredient',
+  DELETE_STEP = 'recipes/delete_step',
 }
 
 export const deleteIngredient = createAction(
@@ -13,9 +13,6 @@ export const deleteIngredient = createAction(
   }),
 );
 
-export const deleteStep = createAction(
-  RecipesActionType.DELETE_STEP,
-  (payload: DeleteStepPayload) => ({
-    payload,
-  }),
-);
+export const deleteStep = createAction(RecipesActionType.DELETE_STEP, (payload: DeleteStepPayload) => ({
+  payload,
+}));

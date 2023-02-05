@@ -1,5 +1,6 @@
 import { Difficulty, Unit, PrismaClient, Gender, Role, ActivityLevel } from '@prisma/client';
 import faker from 'faker';
+import slugify from 'slugify';
 
 class Seed {
   private static prisma = new PrismaClient();
@@ -176,9 +177,13 @@ class Seed {
 
   private static async seedCategories() {
     for (const category of this.categories) {
+      const name = category;
+      const slug = slugify(name, { lower: true, strict: true });
+
       await this.prisma.category.create({
         data: {
           name: category,
+          slug,
           color: faker.internet.color(),
         },
       });
@@ -188,9 +193,13 @@ class Seed {
 
   private static async seedProducts() {
     for (const product of this.products) {
+      const name = product;
+      const slug = slugify(name, { lower: true, strict: true });
+
       await this.prisma.product.create({
         data: {
-          name: product,
+          name,
+          slug,
           image: faker.random.image(),
           calories: faker.datatype.number(500),
           carbs: faker.datatype.number(30),
@@ -218,9 +227,13 @@ class Seed {
 
   private static async seedTags() {
     for (const tag of this.tags) {
+      const name = tag;
+      const slug = slugify(name, { lower: true, strict: true });
+
       await this.prisma.tag.create({
         data: {
-          name: tag,
+          name,
+          slug,
           color: faker.internet.color(),
         },
       });
@@ -261,9 +274,13 @@ class Seed {
 
       const category = faker.random.arrayElement(await this.prisma.category.findMany());
 
+      const name = `${faker.lorem.sentence(faker.datatype.number(10))}_${faker.datatype.number({ min: 1, max: 5 })}`;
+      const slug = slugify(name, { lower: true, strict: true });
+
       await this.prisma.recipe.create({
         data: {
-          name: `${faker.lorem.sentence(faker.datatype.number(10))}_${faker.datatype.number({ min: 1, max: 5 })}`,
+          name,
+          slug,
           description: faker.lorem.sentence(),
           cookingTime: faker.datatype.number(60),
           cost: faker.datatype.number(100),

@@ -13,6 +13,7 @@ import { prisma } from '../../lib/prisma';
 
 import classes from '../../assets/scss/pages/add-recipe.module.scss';
 import { Product } from '@prisma/client';
+import { useField } from '../../hooks/useField';
 
 interface Props {
   takenRecipeNames: string[];
@@ -26,7 +27,7 @@ const RecipesPage: FC<Props> = ({ takenRecipeNames = [], products }) => {
   const [stepFields, setStepFields] = useState<JSX.Element[]>([]);
   const dispatch = useDispatch();
 
-  const recipeName = useSelector((state: State) => state.recipes.name);
+  const recipeName = useField('name', 'recipes');
 
   const nameAlreadyTaken = takenRecipeNames.includes(recipeName);
 

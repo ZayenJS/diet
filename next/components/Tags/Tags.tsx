@@ -39,7 +39,7 @@ const Tags: FC<TagsProps> = ({ tags, basePath, scrollable = true, showMore = fal
 
   if (basePath) {
     tagsMarkup = tags?.map((tag) => (
-      <Link key={tag.id} href={`${basePath}/${tag.id}`}>
+      <Link key={tag.id} href={`${basePath}/${tag.slug}`}>
         <span style={{ backgroundColor: tag.color }} className={classes.tag}>
           {tag.name}
         </span>
@@ -79,7 +79,7 @@ const Tags: FC<TagsProps> = ({ tags, basePath, scrollable = true, showMore = fal
   }
 
   const remainingTagsMarkup = tags.slice(tagsToDisplay).map((tag) => (
-    <Link key={tag.id} href={`${basePath}/${tag.id}`}>
+    <Link key={tag.id} href={`${basePath}/${tag.slug}`}>
       <span style={{ backgroundColor: tag.color }} key={tag.id} className={classes.tag}>
         {tag.name}
       </span>

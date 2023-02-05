@@ -1,5 +1,5 @@
-import { CSSProperties, FC, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { Component, CSSProperties, ErrorInfo, FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Difficulty as DifficultyEnum } from '@prisma/client';
 import { Difficulty } from '../../models/Difficulty';
 import { State } from '../../store';
@@ -10,6 +10,8 @@ import classes from './Field.module.scss';
 import { Rating } from '../../models/Rating';
 import Portal from '../Portal/Portal';
 import Modal from '../Modal/Modal';
+import { useField } from '../../hooks/useField';
+import { FakeImagePreview } from '../../@types/interfaces/FakeImagePreview';
 
 type FieldType =
   | 'text'
@@ -30,11 +32,6 @@ type FieldType =
   | 'rating';
 
 type HTMLFieldType = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
-
-interface FakeImagePreview {
-  id: string;
-  url: string;
-}
 
 export interface FieldProps {
   type: FieldType;
@@ -108,7 +105,7 @@ const Field: FC<FieldProps> = ({
   const [removePreviewModalVisible, setRemovePreviewModalVisible] = useState(false);
 
   const dispatch = useDispatch();
-  const stateValue = useSelector((state: State) => state?.[reducerName]?.[name as keyof State[keyof State]]);
+  const stateValue = useField(name, reducerName);
 
   const _value = value || stateValue;
 
@@ -130,10 +127,9 @@ const Field: FC<FieldProps> = ({
           }
 
           setPreviews(_previews);
+          return;
         }
       }
-
-      return dispatch(inputChange({ name, reducerName, value: files }));
     }
 
     dispatch(inputChange({ name, reducerName, value: event.target.value }));
@@ -152,12 +148,21 @@ const Field: FC<FieldProps> = ({
   const _onRemovePreview = () => {
     if (!selectedPreview) return;
 
-    setPreviews((prev) => prev.filter((preview) => preview.id !== selectedPreview.id));
+    const newPreviews = previews.filter((preview) => preview.id !== selectedPreview.id);
+    setPreviews([...newPreviews]);
     _onRemovePreviewModalClose();
   };
 
   let field = null;
-  const _id = useRef(`${type}-${id ?? Random.id()}`).current;
+  const randomId = useMemo(() => Random.id(), []);
+  const _id = useRef(`${type}-${id ?? randomId}`).current;
+  console.log(type === 'file' ? { _id } : '');
+
+  useEffect(() => {
+    if (type === 'file') {
+      dispatch(inputChange({ name: 'image', reducerName, value: _id ?? '' }));
+    }
+  }, [type, _id, dispatch, name, reducerName]);
 
   switch (type) {
     case 'textarea':
@@ -279,12 +284,38 @@ const Field: FC<FieldProps> = ({
       break;
 
     case 'file':
-      field =
-        maxFiles && previews.length >= maxFiles ? (
+      const maxFilesReached = maxFiles && previews.length >= maxFiles;
+      field = (
+        <>
+          <div
+            className={`${classes['file-field__container']}
+          ${maxFilesReached ? classes['file-field__container--disabled'] : ''}
+          `}>
+            <input
+              type={type}
+              name={name}
+              id={_id}
+              style={style}
+              onChange={_onChange}
+              onBlur={onBlur}
+              onFocus={onFocus}
+              onClick={onClick}
+              multiple={multiple}
+            />
+            <label
+              onClick={(e) => (maxFilesReached ? e.preventDefault() : null)}
+              title={maxFilesReached ? 'Le nombre maximum de fichiers a été atteint' : ''}
+              className={`
+            ${classes.field}
+            ${classNames?.field ?? ''}`}
+              htmlFor={_id}>
+              {label}
+            </label>
+          </div>
           <div className={`${classes.preview} ${classNames?.preview ?? ''}`}>
             {previews.map((preview) => (
               <div key={Random.id()} className={`${classes.preview__item} ${classNames?.previewItem ?? ''}`}>
-                <img src={preview.url} alt="" />
+                <img src={preview.url} alt="" id={preview.id} />
                 <button
                   type="button"
                   className={`${classes.preview__button} diet-before-cross`}
@@ -311,29 +342,9 @@ const Field: FC<FieldProps> = ({
               </Modal>
             </Portal>
           </div>
-        ) : (
-          <div className={classes['file-field__container']}>
-            <input
-              type={type}
-              name={name}
-              id={_id}
-              style={style}
-              value={_value}
-              onChange={_onChange}
-              onBlur={onBlur}
-              onFocus={onFocus}
-              onClick={onClick}
-              multiple={multiple}
-            />
-            <label
-              className={`
-            ${classes.field}
-            ${classNames?.field ?? ''}`}
-              htmlFor={_id}>
-              {label}
-            </label>
-          </div>
-        );
+        </>
+      );
+
       break;
 
     case 'difficulty':
@@ -449,3 +460,32 @@ const Field: FC<FieldProps> = ({
 };
 
 export default Field;
+
+class ErrorBoundary extends Component<{ children?: ReactNode | ReactNode[] }, { hasError: boolean }> {
+  state = {
+    hasError: false,
+  };
+
+  constructor(props: any) {
+    super(props);
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    // Mettez à jour l'état, de façon à montrer l'UI de repli au prochain rendu.
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // Vous pouvez aussi enregistrer l'erreur au sein d'un service de rapport.
+    console.log(error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // Vous pouvez afficher n'importe quelle UI de repli.
+      return <h1>Something went wrong.</h1>;
+    }
+
+    return this.props.children;
+  }
+}

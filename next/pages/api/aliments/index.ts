@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../lib/prisma';
 
 import { Product } from '@prisma/client';
+import slugify from 'slugify';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -27,9 +28,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: `Missing fields: ${missingFields.join(', ')}` });
     }
 
+    const slug = slugify(name, { lower: true, strict: true });
+
     const product = await prisma.product.create({
       data: {
         name,
+        slug,
         calories: Number(calories),
         protein: Number(protein),
         fat: Number(fat),

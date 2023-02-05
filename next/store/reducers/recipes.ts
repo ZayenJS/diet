@@ -2,37 +2,7 @@ import { Difficulty } from '@prisma/client';
 import { createReducer } from '@reduxjs/toolkit';
 import { deleteIngredient, deleteStep, inputChange } from '../actions';
 
-export interface RecipesState {
-  name: string;
-  description: string;
-  difficulty: string;
-  rating: string;
-  cost: string;
-  preparationTime: string;
-  cookingTime: string;
-  restTime: string;
-  thumbnail: string;
-  forHowMany: string;
-  calories: string;
-  protein: string;
-  fat: string;
-  saturated: string;
-  carbs: string;
-  sugar: string;
-  ingredients: {
-    [key: string]: {
-      _id: string;
-      name: string;
-      quantity: string;
-      unit: string;
-    };
-  };
-  steps: {
-    [key: string]: string;
-  };
-}
-
-const INITIAL_STATE: RecipesState = {
+const DEFAULT_FIELDS = {
   name: '',
   description: '',
   difficulty: Difficulty.EASY,
@@ -49,6 +19,42 @@ const INITIAL_STATE: RecipesState = {
   saturated: '',
   carbs: '',
   sugar: '',
+};
+
+export interface RecipesState {
+  create: {
+    name: string;
+    description: string;
+    difficulty: Difficulty;
+    rating: string;
+    cost: string;
+    preparationTime: string;
+    cookingTime: string;
+    restTime: string;
+    thumbnail: string;
+    forHowMany: string;
+    calories: string;
+    protein: string;
+    fat: string;
+    saturated: string;
+    carbs: string;
+    sugar: string;
+  };
+  ingredients: {
+    [key: string]: {
+      _id: string;
+      name: string;
+      quantity: string;
+      unit: string;
+    };
+  };
+  steps: {
+    [key: string]: string;
+  };
+}
+
+const INITIAL_STATE: RecipesState = {
+  create: DEFAULT_FIELDS,
   ingredients: {},
   steps: {},
 };
@@ -90,14 +96,15 @@ export const recipesReducer = createReducer(INITIAL_STATE, (builder) => {
         }
       }
 
-      if (isForRecipesReducer && Object.keys(state).includes(action.payload.name)) {
-        // @ts-expect-error - we know that the name is a key of the state with a string value
-        state[action.payload.name as keyof RecipesState] = action.payload.value;
+      if (isForRecipesReducer && Object.keys(state.create).includes(action.payload.name)) {
+        // @ts-expect-error - we know that the name is a key of the state.create with a string value
+        state.create[action.payload.name as keyof RecipesState] = action.payload.value;
       }
     })
     .addCase(deleteIngredient, (state, action) => {
       delete state.ingredients[action.payload.id];
-    }).addCase(deleteStep, (state, action) => {
-      delete state.steps[action.payload.id];
     })
+    .addCase(deleteStep, (state, action) => {
+      delete state.steps[action.payload.id];
+    });
 });

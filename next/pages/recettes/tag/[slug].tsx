@@ -40,7 +40,7 @@ const RecipesPage: FC<Props> = ({ recipes, page, pages, tag }) => {
         <div className={classes.recipes}>
           <div className={classes.container}>{content}</div>
           {!!recipesMap.length && (
-            <Pagination page={Number(page)} pages={pages} path={`/recettes/tag/${tag.id}`} goToExtremity />
+            <Pagination page={Number(page)} pages={pages} path={`/recettes/tag/${tag.slug}`} goToExtremity />
           )}
         </div>
       </Layout>

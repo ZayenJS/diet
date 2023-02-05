@@ -4,10 +4,16 @@ import axios from '../../../lib/axios';
 import { RouteName, router } from '../../../models/Router';
 
 export enum ProductsActionType {
-  CREATE = 'CREATE',
+  CREATE = 'products/create',
 }
 
 export const createProduct = createAsyncThunk(ProductsActionType.CREATE, async ({ data }: CreateProductPayload) => {
+  const fileInputId = data.image;
+  const file = document.getElementById(fileInputId) as HTMLInputElement;
+  console.log(data);
+
+  return;
+
   if (!process.env.NEXT_PUBLIC_UPLOADER_URL) {
     throw new Error('No uploader URL');
   }
@@ -19,8 +25,7 @@ export const createProduct = createAsyncThunk(ProductsActionType.CREATE, async (
   });
 
   let response = productResponse;
-
-  const file = data.image[0];
+  let message = productResponse.data.message;
 
   if (file) {
     const formData = new FormData();
@@ -44,6 +49,6 @@ export const createProduct = createAsyncThunk(ProductsActionType.CREATE, async (
 
   return {
     product: response.data.product,
-    message: response.data.message,
+    message,
   };
 });

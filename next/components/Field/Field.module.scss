@@ -36,6 +36,20 @@
   }
 }
 
+.file-field__container--disabled {
+  :is(.field) {
+    cursor: not-allowed;
+    background-color: #ccc;
+    border-color: #ccc;
+
+    &:hover {
+      background-color: #ccc;
+      border-color: #ccc;
+      color: $secondary-color;
+    }
+  }
+}
+
 .difficulty_container {
   @include flex($ff: row nowrap, $justify: flex-start, $gap: 0.5rem);
 

@@ -53,6 +53,7 @@ model RecipeRating {
 model Recipe {
   id              Int            @id @default(autoincrement())
   name            String         @unique @db.VarChar(100)
+  slug            String         @unique @map("slug") @db.VarChar(100)
   description     String?        @db.Text
   difficulty      Difficulty
   cost            Float          @db.Real
@@ -95,6 +96,7 @@ model Tool {
 model Tag {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(30)
+  slug      String   @unique @map("slug") @db.VarChar(100)
   color     String   @default("#fff") @db.VarChar(7)
   recipes   Recipe[] @relation("recipes_tags")
   createdAt DateTime @default(now()) @map("created_at")
@@ -106,6 +108,7 @@ model Tag {
 model Category {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(30)
+  slug      String   @unique @map("slug") @db.VarChar(100)
   color     String   @default("#fff") @db.VarChar(7)
   recipes   Recipe[] @relation("recipes_categories")
   createdAt DateTime @default(now()) @map("created_at")
@@ -128,6 +131,7 @@ model Step {
 model Product {
   id          Int          @id @default(autoincrement())
   name        String       @unique @db.VarChar(100)
+  slug        String       @unique @map("slug") @db.VarChar(100)
   image       String?      @db.Text
   calories    Float?       @db.Real
   protein     Float?       @db.Real
@@ -157,6 +161,7 @@ model Ingredient {
   amount    Float    @db.Real
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  inGrams   Float?   @map("in_grams")
 
   @@index([productId], name: "ingredient_product_id")
   @@index([recipeId], name: "ingredient_recipe_id")

@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import Layout from '../../components/Layout/Layout';
 
 import Head from 'next/head';
@@ -15,9 +15,7 @@ interface Props {
   takenProductsNames: string[];
 }
 
-const RecipesPage: FC<Props> = ({ takenProductsNames = [] }) => {
-  const firstRender = useRef(true);
-
+const AddProductPage: FC<Props> = ({ takenProductsNames = [] }) => {
   const dispatch = useAppDispatch();
 
   const productName = useSelector((state: State) => state.products.create.name);
@@ -51,7 +49,7 @@ const RecipesPage: FC<Props> = ({ takenProductsNames = [] }) => {
           </fieldset>
           <hr />
           <fieldset className={classes.macros}>
-            <legend>Macros</legend>
+            <legend>Macros / 100g</legend>
             <Field label="Calories" name="calories" reducerName="products" type="number" />
             <Field label="Protéines" name="protein" reducerName="products" type="number" />
             <Field label="Lipides" name="fat" reducerName="products" type="number" />
@@ -88,4 +86,4 @@ export const getServerSideProps = async () => {
   };
 };
 
-export default RecipesPage;
+export default AddProductPage;
